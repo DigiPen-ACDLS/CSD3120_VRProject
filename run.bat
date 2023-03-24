@@ -97,4 +97,7 @@ goto ok
 
 :ok
 echo DONE!
+echo Running SolarSystemVR...
+call npm run start
+
 pause
