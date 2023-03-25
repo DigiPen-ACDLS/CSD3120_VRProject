@@ -1,0 +1,31 @@
+{
+  "compilerOptions" : {
+    
+    /* Modules */
+    "module"              : "commonjs",   /* Sets the module system for the program. */
+    "moduleResolution"    : "node",       /* Provides a way to override the default list of file name suffixes to search when resolving a module. */
+    "noResolve"           : false,        /* */
+    "rootDir"             : "src",        /* */
+    "types"               : [
+      "babylonjs", "babylonjs-gui"
+    ],
+
+    /* Type Checking */
+    "noImplicitAny"       : false,        /* If Typescript should fall back to a type of any for a variable when it cannot infer the type */
+    
+    /* Emit */
+    "outDir"              : "./dist/",    /* Specify an output folder for all emitted files. */
+    "preserveConstEnums"  : true,         /* Does not erase const enum declarations in generated code. */
+    "removeComments"      : true,         /* Strips all comments from TypeScript files when converting into JavaScript. */
+    "sourceMap"           : true,         /* Enables the generation of files that allow debuggers and other tools to display the original TypeScript source code when actually working with the emitted JavaScript files.*/
+    
+    /* Language and Environment */
+    "target"              : "es6",        /* Changes which JS features are downleveled and which are left intact */
+    "lib"                 : [             /* Default set of type definitions for built-in JS APIs */
+      "dom", "ES6"
+    ],
+  },
+  "files"           : [                   /* Specifies an allowlist of files to include in the program. */
+    "./src/index.ts"
+  ]
+}
