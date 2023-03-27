@@ -64,7 +64,23 @@ export class WebXRApp
     console.log("Created " + sceneName + " " + sceneTypeString);
   }
 
-  
+  Init()
+  {
 
+  }
 
+  Update()
+  {
+    const renderFunction = function()
+    {
+      this.scene.render();
+    };
+
+    this.engine.runRenderLoop(renderFunction);
+  }
+
+  Exit()
+  {
+
+  }
 }
