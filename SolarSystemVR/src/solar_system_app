@@ -1,0 +1,24 @@
+/**
+  @fileoverview   Implementation for the solar system VR web application.
+  @author         Diren D Bharwani, 2002216
+*/
+
+import { WebXRApp } from "./app";
+
+//=============================================================================
+// Type Definitions
+//=============================================================================
+
+export class SolarSystemVRApp extends WebXRApp
+{
+  //===========================================================================
+  // Constructors & Destructor
+  //===========================================================================
+
+  constructor(engine: BABYLON.Engine, canvas: HTMLCanvasElement)
+  {
+    // WebXRApp's ctor
+    super(engine, canvas);
+  }
+};
+
