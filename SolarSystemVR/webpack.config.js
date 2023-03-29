@@ -8,11 +8,11 @@ module.exports =
 {
     mode        : "development",
     target      : "web",
-    entry       : {
+    entry : {
       index     : './src/index.ts',
     },
     devtool     : 'inline-source-map',
-    devServer   : {
+    devServer : {
       static    : true,
       port      : 3000,
       open      : true,
@@ -24,18 +24,18 @@ module.exports =
         template: path.resolve(__dirname, "src/index.html"),
       }),
     ],
-    resolve     : {
+    resolve : {
         extensions: [
           ".ts", ".js"
         ]
     },
-    module      : {
+    module  : {
         rules     : [{ 
           test  : /\.tsx?$/, 
           loader: "ts-loader" 
         }]
     },
-    output      : {
+    output  : {
       filename  : 'index.js',
       path      : path.resolve(__dirname, 'dist'),
     },
