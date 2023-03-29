@@ -3,4 +3,4 @@
   @author         Diren D Bharwani, 2002216
 */
 
-export * from "./camera"
+export * from "./xr_user";
