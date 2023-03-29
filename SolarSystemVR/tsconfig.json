@@ -26,6 +26,6 @@
     ],
   },
   "files"           : [                   /* Specifies an allowlist of files to include in the program. */
-    "./src/index.ts"
+    "src/index.ts"
   ]
 }

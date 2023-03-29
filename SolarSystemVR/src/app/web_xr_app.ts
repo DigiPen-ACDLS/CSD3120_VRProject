@@ -3,6 +3,7 @@
   @author         Diren D Bharwani, 2002216
 */
 
+import * as BABYLON from "babylonjs"
 import { XRMode, XRScene } from "./xr_scene";
 
 /**
@@ -32,54 +33,22 @@ export class WebXRApp
   }
 
   //===========================================================================
-  // Getter / Setters
-  //===========================================================================
-
-  GetCurrentScene()
-  {
-    return this.currentScene;
-  }
-
-  GetScene(sceneName: string)
-  {
-    return this.scenes.get(sceneName);
-  }
-
-  SetCurrentScene(sceneName: string)
-  {
-    const sceneToSet = this.scenes.get(sceneName);
-    if (sceneToSet)
-      this.currentScene = sceneToSet;
-  }
-
-  //===========================================================================
   // Member Functions
   //===========================================================================
 
-  CreateScene(sceneName: string, mode: XRMode = XRMode.VR)
+  public async Init()
   {
-    this.scenes.set(sceneName, new XRScene(mode, this.engine));
-
-    const sceneTypeString = mode === XRMode.VR ? "VRScene" : "ARScene";
-    console.log("Created " + sceneName + " " + sceneTypeString);
+    await this.currentScene.InitXR(true);
   }
 
-  Init()
+  public Update()
   {
-
+    this.engine.runRenderLoop(() => {
+      this.currentScene.scene.render();
+    });
   }
 
-  Update()
-  {
-    const renderFunction = function()
-    {
-      this.scene.render();
-    };
-
-    this.engine.runRenderLoop(renderFunction);
-  }
-
-  Exit()
+  public Exit()
   {
 
   }

@@ -3,6 +3,9 @@
   @author         Diren D Bharwani, 2002216
 */
 
+import * as BABYLON from "babylonjs";
+import { XRUser } from "../objects";
+
 //=============================================================================
 // Type Definitions
 //=============================================================================
@@ -18,14 +21,14 @@ export class XRScene
   // Data Members
   //===========================================================================
 
-  private   type            : XRMode;
+  private  type            : XRMode;
 
   // Babylon components
 
-  private   scene           : BABYLON.Scene;
-  private   featuresManager : BABYLON.WebXRFeaturesManager;
+  public   scene            : BABYLON.Scene;
+  public   featuresManager  : BABYLON.WebXRFeaturesManager;
 
-  // Scene Objects
+  public   user            : XRUser;
 
   //===========================================================================
   // Constructors & Destructor
@@ -48,7 +51,7 @@ export class XRScene
    * Call this function after the scene has been setup to create the VR experience.
    * @param debugMode If toggling of the inspector is enabled. Use CTRL + ALT + I to toggle.
    */
-  public async Init(debugMode: boolean)
+  public async InitXR(debugMode: boolean)
   {
     const xrMode: XRSessionMode = this.type === XRMode.VR ? "immersive-vr" : "immersive-ar";
 
@@ -74,6 +77,6 @@ export class XRScene
 
     // Attach the features manager. Features can be enabled through another experience
     this.featuresManager = xr.baseExperience.featuresManager;
-  } 
-  
+  }
+
 };
