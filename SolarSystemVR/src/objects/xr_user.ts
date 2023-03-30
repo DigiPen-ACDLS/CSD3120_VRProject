@@ -3,6 +3,8 @@
   @author         Diren D Bharwani, 2002216
 */
 
+import * as BABYLON from "babylonjs";
+
 //=============================================================================
 // Type Definitions
 //=============================================================================
@@ -21,10 +23,6 @@ export class XRUser
   //===========================================================================
 
   public  camera      : BABYLON.Camera;
-  public  moveSpeed   : number;
 
-  contructor(moveSpeed: number)
-  {
-    this.moveSpeed = 0.5;
-  }
+  // TODO: Add Motion Controllers & Interactions?
 };

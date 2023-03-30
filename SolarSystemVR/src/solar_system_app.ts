@@ -22,14 +22,16 @@ export class SolarSystemVRApp extends WebXRApp
   // Public Member Functions
   //===========================================================================
 
-  public async Init()
+  public async Init(): Promise<void>
   {
     this.currentScene = new XRScene(XRMode.VR, this.engine);
+
+    this.createUser();
 
     await super.Init();
   }
 
-  public Update()
+  public Update(): void
   {
     super.Update();
   }
@@ -42,4 +44,17 @@ export class SolarSystemVRApp extends WebXRApp
   //===========================================================================
   // Private Member Functions
   //===========================================================================
+
+  private createUser(): void
+  {
+    const userCamera = new BABYLON.UniversalCamera
+    (
+      "user_camera", 
+      new BABYLON.Vector3(0, 0, -20), 
+      this.currentScene.scene
+    );
+
+    userCamera.checkCollisions    = true;
+    this.currentScene.user.camera = userCamera;
+  }
 };

@@ -42,7 +42,7 @@ export class WebXRApp
   // Member Functions
   //===========================================================================
 
-  public async Init()
+  public async Init(): Promise<void>
   {
     await this.currentScene.InitXR(true);
     this.assetLoader = new AssetLoader(this.currentScene.scene);
@@ -134,14 +134,14 @@ export class WebXRApp
     //===========================================================================
 }
 
-  public Update()
+  public Update(): void
   {
     this.engine.runRenderLoop(() => {
       this.currentScene.scene.render();
     });
   }
 
-  public Exit()
+  public Exit(): void
   {
 
   }
