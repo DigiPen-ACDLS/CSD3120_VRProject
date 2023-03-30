@@ -41,6 +41,8 @@ export class XRScene
     // Hide the inspector by default.
     this.scene = new BABYLON.Scene(engine);
     this.scene.debugLayer.hide();
+
+    this.scene.collisionsEnabled = true;
   }
 
   //===========================================================================
@@ -51,7 +53,7 @@ export class XRScene
    * Call this function after the scene has been setup to create the VR experience.
    * @param debugMode If toggling of the inspector is enabled. Use CTRL + ALT + I to toggle.
    */
-  public async InitXR(debugMode: boolean)
+  public async InitXR(debugMode: boolean): Promise<void>
   {
     const xrMode: XRSessionMode = this.type === XRMode.VR ? "immersive-vr" : "immersive-ar";
 
