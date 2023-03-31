@@ -5,6 +5,7 @@
 
 import * as BABYLON from "babylonjs";
 import { WebXRApp, XRMode, XRScene } from "./app/";
+import { XRUser } from "./objects";
 
 export class SolarSystemVRApp extends WebXRApp
 {
@@ -26,7 +27,11 @@ export class SolarSystemVRApp extends WebXRApp
   {
     this.currentScene = new XRScene(XRMode.VR, this.engine);
 
-    this.createUser();
+    this.initUser();
+    this.currentScene.scene.activeCamera = this.currentScene.user.camera;
+
+    const directionalLight = new BABYLON.DirectionalLight("Directional Light", new BABYLON.Vector3(-2,-5,2), this.currentScene.scene);
+    directionalLight.shadowEnabled = true;
 
     await super.Init();
   }
@@ -45,16 +50,13 @@ export class SolarSystemVRApp extends WebXRApp
   // Private Member Functions
   //===========================================================================
 
-  private createUser(): void
+  private initUser(): void
   {
-    const userCamera = new BABYLON.UniversalCamera
-    (
-      "user_camera", 
-      new BABYLON.Vector3(0, 0, -20), 
-      this.currentScene.scene
-    );
+    this.currentScene.user.camera.position  = new BABYLON.Vector3(0, 0, -5);
+    this.currentScene.user.camera.minZ      = 0.01;
 
-    userCamera.checkCollisions    = true;
-    this.currentScene.user.camera = userCamera;
+    (this.currentScene.user.camera as BABYLON.FreeCamera).speed = 0.3;
+
+    this.currentScene.user.camera.attachControl(this.canvas, true);
   }
 };

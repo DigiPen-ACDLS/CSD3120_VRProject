@@ -4,7 +4,7 @@
 */
 
 import * as BABYLON from "babylonjs";
-import { XRUser } from "../objects";
+import { CameraType, CameraConfig, XRUser } from "../objects";
 
 //=============================================================================
 // Type Definitions
@@ -43,6 +43,12 @@ export class XRScene
     this.scene.debugLayer.hide();
 
     this.scene.collisionsEnabled = true;
+
+    // Create user & Free Camera by default
+    this.user = new XRUser(this);
+
+    const cameraInfo = new CameraConfig(CameraType.Free, "XRUserCamera");
+    this.user.CreateCamera(cameraInfo);
   }
 
   //===========================================================================

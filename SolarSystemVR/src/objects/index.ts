@@ -4,3 +4,4 @@
 */
 
 export * from "./xr_user";
+export * from "./config_objects";
