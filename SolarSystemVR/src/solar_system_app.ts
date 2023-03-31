@@ -54,7 +54,7 @@ export class SolarSystemVRApp extends WebXRApp
       this.currentScene.scene
     );
 
-    userCamera.checkCollisions    = true;
-    this.currentScene.user.camera = userCamera;
+    //userCamera.checkCollisions    = true;
+    //this.currentScene.user.camera = userCamera;
   }
 };
