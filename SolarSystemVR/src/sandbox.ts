@@ -37,6 +37,8 @@ export class SandboxVR extends WebXRApp
 
     await this.createFloor();
     await this.createSpheresAndTargets();
+    await this.verify();
+    
 
     await super.Init();
   }
@@ -84,17 +86,64 @@ export class SandboxVR extends WebXRApp
     spheres[0].mesh.position = new BABYLON.Vector3(0,1,0);
     const triggerA = new TestTarget(spheres[0], spheres, this.currentScene.scene);
     triggerA.mesh.position = new BABYLON.Vector3(0,0.5,-2);
+    this.triggers.set("TargetA", triggerA);
 
     // B
     spheres[1].mesh.position = new BABYLON.Vector3(-1,1,0);
     const triggerB = new TestTarget(spheres[1], spheres, this.currentScene.scene);
     triggerB.mesh.position = new BABYLON.Vector3(1,0.5,-2);
+    this.triggers.set("TargetB", triggerB);
+
 
     // C
     spheres[2].mesh.position = new BABYLON.Vector3(1,1,0);
     const triggerC = new TestTarget(spheres[2], spheres, this.currentScene.scene);
     triggerC.mesh.position = new BABYLON.Vector3(-1,0.5,-2);
+    this.triggers.set("TargetC", triggerC);
+
   }
 
-  
+  private verify(): void
+  {
+    this.currentScene.scene.onKeyboardObservable.add
+    (
+      (keyboardInfo)=>
+      {
+        var passChecks = true;
+
+        switch(keyboardInfo.type)
+        {
+          case BABYLON.KeyboardEventTypes.KEYDOWN:
+          {
+            switch (keyboardInfo.event.key)
+            {
+              case "r":
+              case "R":
+              {
+                for (const [name, trigger] of this.triggers)
+                {
+                  if (trigger.match)
+                  {
+                    passChecks  = false;
+                    break;
+                  }
+                }
+
+                if (passChecks)
+                  console.log("Pass!");
+                else
+                  console.log("Fail!");
+
+                break;
+              }
+            }
+            
+            break;
+          }
+        }
+      }
+    );
+
+    
+  }
 };
