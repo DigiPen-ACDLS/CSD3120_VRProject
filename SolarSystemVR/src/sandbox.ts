@@ -36,6 +36,7 @@ export class SandboxVR extends WebXRApp
 
     await this.createSpheres();
     await this.createFloor();
+    // await this.createTriggers();
 
     await super.Init();
   }
@@ -56,12 +57,13 @@ export class SandboxVR extends WebXRApp
 
   private initUser(): void
   {
-    this.currentScene.user.camera.position  = new BABYLON.Vector3(0, 0, -5);
+    this.currentScene.user.camera.position  = new BABYLON.Vector3(0, 2, -5);
     this.currentScene.user.camera.minZ      = 0.01;
 
     (this.currentScene.user.camera as BABYLON.FreeCamera).speed = 0.3;
-
     this.currentScene.user.camera.attachControl(this.canvas, true);
+
+    this.currentScene.scene.activeCamera = this.currentScene.user.camera;
   }
 
   private createSpheres(): void
@@ -87,8 +89,17 @@ export class SandboxVR extends WebXRApp
 
   private createTriggers(): void
   {
-    this.triggers.set("A", new TestTrigger("A", this.currentScene.scene));
-    this.triggers.set("B", new TestTrigger("B", this.currentScene.scene));
-    this.triggers.set("C", new TestTrigger("C", this.currentScene.scene));
+    const triggerA = new TestTrigger("A", this.currentScene.scene);
+    const triggerB = new TestTrigger("B", this.currentScene.scene);
+    const triggerC = new TestTrigger("C", this.currentScene.scene);
+    
+    triggerA.mesh.position = new BABYLON.Vector3(-1,0,0);
+    triggerB.mesh.position = new BABYLON.Vector3(0,0,0);
+    triggerC.mesh.position = new BABYLON.Vector3(1,0,0);
+
+    const potentialTargets: string[] = [ "A", "B", "C" ];
+    triggerA.RegisterTargetIntersections(this.currentScene.scene,  potentialTargets);
+    triggerB.RegisterTargetIntersections(this.currentScene.scene,  potentialTargets);
+    triggerC.RegisterTargetIntersections(this.currentScene.scene,  potentialTargets);
   }
 };

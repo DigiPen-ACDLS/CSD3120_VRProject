@@ -37,6 +37,10 @@ export class TestTrigger
           () =>
           {
             this.targets.add(potentialTarget);
+
+            console.log("Adding " + potentialTarget);
+            for (const target in this.targets)
+              console.log(target);
           }
         )
       );
@@ -47,12 +51,16 @@ export class TestTrigger
         new BABYLON.ExecuteCodeAction
         ( 
           {
-            trigger   : BABYLON.ActionManager.OnIntersectionEnterTrigger,
+            trigger   : BABYLON.ActionManager.OnIntersectionExitTrigger,
             parameter : scene.getMeshByName(potentialTarget)
           },
           () =>
           {
             this.targets.delete(potentialTarget);
+
+            console.log("Removing " + potentialTarget);
+            for (const target in this.targets)
+              console.log(target);
           }
         )
       );
