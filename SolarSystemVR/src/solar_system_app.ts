@@ -5,7 +5,6 @@
 
 import * as BABYLON from "babylonjs";
 import { WebXRApp, XRMode, XRScene } from "./app/";
-import { XRUser } from "./objects";
 
 export class SolarSystemVRApp extends WebXRApp
 {
