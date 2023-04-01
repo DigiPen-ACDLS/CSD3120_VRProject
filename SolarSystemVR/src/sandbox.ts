@@ -8,7 +8,8 @@ import { TestTarget, TestSphere } from "./test";
 
 export class SandboxVR extends WebXRApp
 {
-  private triggers: Map<string, TestTarget>;
+  private spheres : TestSphere[];
+  private triggers: TestTarget[];
 
   //===========================================================================
   // Constructors & Destructor
@@ -19,7 +20,8 @@ export class SandboxVR extends WebXRApp
     // WebXRApp's ctor
     super(engine, canvas);
 
-    this.triggers = new Map<string, TestTarget>();
+    this.spheres = [];
+    this.triggers = [];
   }
 
   //===========================================================================
@@ -37,7 +39,7 @@ export class SandboxVR extends WebXRApp
 
     await this.createFloor();
     await this.createSpheresAndTargets();
-    await this.verify();
+    await this.createButton();
     
 
     await super.Init();
@@ -59,7 +61,7 @@ export class SandboxVR extends WebXRApp
 
   private initUser(): void
   {
-    this.currentScene.user.camera.position  = new BABYLON.Vector3(0, 2, -5);
+    this.currentScene.user.camera.position  = new BABYLON.Vector3(0, 2, -10);
     this.currentScene.user.camera.minZ      = 0.01;
 
     (this.currentScene.user.camera as BABYLON.FreeCamera).speed = 0.3;
@@ -76,74 +78,51 @@ export class SandboxVR extends WebXRApp
 
   private createSpheresAndTargets(): void
   {
-    var spheres: TestSphere[] = [
-      new TestSphere("A", 0.5, this.currentScene.scene),
-      new TestSphere("B", 1.0, this.currentScene.scene),
-      new TestSphere("C", 0.8, this.currentScene.scene)
-    ]
+    // Spheres
+    this.spheres.push(new TestSphere("A", 0.5, this.currentScene.scene));
+    this.spheres.push(new TestSphere("B", 0.7, this.currentScene.scene));
+    this.spheres.push(new TestSphere("C", 0.6, this.currentScene.scene));
 
+    // Triggers
+    this.triggers.push(new TestTarget(this.spheres[0], this.currentScene.scene));
+    this.triggers.push(new TestTarget(this.spheres[1], this.currentScene.scene));
+    this.triggers.push(new TestTarget(this.spheres[2], this.currentScene.scene));
+  
     // A
-    spheres[0].mesh.position = new BABYLON.Vector3(0,1,0);
-    const triggerA = new TestTarget(spheres[0], spheres, this.currentScene.scene);
-    triggerA.mesh.position = new BABYLON.Vector3(0,0.5,-2);
-    this.triggers.set("TargetA", triggerA);
+    this.spheres[0].mesh.position   = new BABYLON.Vector3(0,1,0);
+    this.triggers[0].mesh.position  = new BABYLON.Vector3(0,0.5,-2);
 
     // B
-    spheres[1].mesh.position = new BABYLON.Vector3(-1,1,0);
-    const triggerB = new TestTarget(spheres[1], spheres, this.currentScene.scene);
-    triggerB.mesh.position = new BABYLON.Vector3(1,0.5,-2);
-    this.triggers.set("TargetB", triggerB);
-
+    this.spheres[1].mesh.position   = new BABYLON.Vector3(-1,1,0);
+    this.triggers[1].mesh.position  = new BABYLON.Vector3(1,0.5,-2);
 
     // C
-    spheres[2].mesh.position = new BABYLON.Vector3(1,1,0);
-    const triggerC = new TestTarget(spheres[2], spheres, this.currentScene.scene);
-    triggerC.mesh.position = new BABYLON.Vector3(-1,0.5,-2);
-    this.triggers.set("TargetC", triggerC);
-
+    this.spheres[2].mesh.position = new BABYLON.Vector3(1,1,0);
+    this.triggers[2].mesh.position = new BABYLON.Vector3(-1,0.5,-2);
   }
 
-  private verify(): void
+  private createButton(): void
   {
-    this.currentScene.scene.onKeyboardObservable.add
-    (
-      (keyboardInfo)=>
+    const button = BABYLON.MeshBuilder.CreateCylinder("Button", {height:0.3, diameter:1}, this.currentScene.scene);
+    button.position = new BABYLON.Vector3(0,0.3,-4);
+
+    this.currentScene.scene.onPointerDown = (event, pickResult)=>
+    {
+      if (pickResult.hit && pickResult.pickedMesh.name === "Button")
       {
         var passChecks = true;
-
-        switch(keyboardInfo.type)
+        for (const trigger of this.triggers)
         {
-          case BABYLON.KeyboardEventTypes.KEYDOWN:
+          console.log(trigger.target + ": " + (trigger.match ? "Match" : "No Match"));
+          if (trigger.match == false)
           {
-            switch (keyboardInfo.event.key)
-            {
-              case "r":
-              case "R":
-              {
-                for (const [name, trigger] of this.triggers)
-                {
-                  if (trigger.match)
-                  {
-                    passChecks  = false;
-                    break;
-                  }
-                }
-
-                if (passChecks)
-                  console.log("Pass!");
-                else
-                  console.log("Fail!");
-
-                break;
-              }
-            }
-            
+            passChecks = false;
             break;
           }
         }
-      }
-    );
 
-    
+        console.log(passChecks ? "Pass!" : "Fail");
+      }
+    };
   }
 };

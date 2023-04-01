@@ -20,25 +20,25 @@ export class TestSphere
 
     verticalDrag.onDragStartObservable.add
     (
-        (event)=>
+      (event)=>
+      {
+        if (event.dragPlanePoint.y < this.mesh.position.y)
         {
-            if (event.dragPlanePoint.y < this.mesh.position.y)
-            {
-                const dragID = verticalDrag.currentDraggingPointerId;
-                verticalDrag.detach();
-                horizontalDrag.attach(this.mesh);
-                horizontalDrag.startDrag(dragID);
-            }
+          const dragID = verticalDrag.currentDraggingPointerId;
+          verticalDrag.detach();
+          horizontalDrag.attach(this.mesh);
+          horizontalDrag.startDrag(dragID);
         }
+      }
     );
 
     horizontalDrag.onDragEndObservable.add
     (
-        (event)=>
-        {
-            horizontalDrag.detach();
-            verticalDrag.attach(this.mesh);
-        }
+      ()=>
+      {
+        horizontalDrag.detach();
+        verticalDrag.attach(this.mesh);
+      }
     );
 
     this.mesh.addBehavior(verticalDrag);

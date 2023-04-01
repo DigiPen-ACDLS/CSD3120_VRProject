@@ -6,20 +6,14 @@ export class TestTarget
 {
   public target               : string;
   public mesh                 : BABYLON.AbstractMesh;
-  public intersectObservable  : BABYLON.Observable<boolean>;
   public match                : boolean;
 
-  private matchOutput : boolean;
-  private mismatchOutput : boolean;
-
-  constructor(target: TestSphere, targets: TestSphere[], scene: BABYLON.Scene)
+  constructor(target: TestSphere, scene: BABYLON.Scene)
   {
     this.target     = target.name;
     const meshName  = target.name + "_target";
     
     this.match          = false;
-    this.matchOutput    = false;
-    this.mismatchOutput = false;
 
     // Create a sphere
     this.mesh = BABYLON.MeshBuilder.CreateSphere(meshName, {diameter: 0.2}, scene);
@@ -27,50 +21,19 @@ export class TestTarget
     this.mesh.isVisible       = true;
     this.mesh.isPickable      = false;
 
-    this.intersectObservable = new BABYLON.Observable<boolean>();
-    
-    var currentTarget   : string = null;
-    var potentialTarget : string = null;
+    // Create material
+    const triggerMaterial = new BABYLON.StandardMaterial(meshName + "_material", scene);
+    triggerMaterial.diffuseColor = BABYLON.Color3.Red();
 
-    for (const t of targets)
-    {
-      scene.onBeforeRenderObservable.add
-      (
-        () =>
-        {
-          let IS_INTERSECTING = this.mesh.intersectsMesh(t.mesh, true, true);
-          if (IS_INTERSECTING)
-          {
-            currentTarget     = target.name;
-            potentialTarget   = t.name;
-          }
-
-          this.intersectObservable.notifyObservers(IS_INTERSECTING);
-        }
-      );
-    }
-
-    this.intersectObservable.add
+    this.mesh.material = triggerMaterial;
+      
+    scene.registerBeforeRender
     (
-      async (intersecting)=>
+      ()=>
       {
-        this.match = (intersecting && currentTarget === potentialTarget);
-
-        if (this.match && !this.matchOutput)
-        {
-          this.match          = true;
-          this.mismatchOutput = false;
-
-          console.log(currentTarget + " Matching " + potentialTarget);
-        }
-        
-        if (!this.match && !this.mismatchOutput)
-        {
-          this.mismatchOutput = true;
-          this.matchOutput    = false;
-        }
+        this.match = this.mesh.intersectsMesh(target.mesh, true);
+        (this.mesh.material as BABYLON.StandardMaterial).diffuseColor = this.match ? BABYLON.Color3.Blue() : BABYLON.Color3.Red();
       }
-          
-    );
+    )
   }
 };
