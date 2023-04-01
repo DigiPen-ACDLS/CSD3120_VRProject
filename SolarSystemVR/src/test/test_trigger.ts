@@ -53,11 +53,7 @@ export class TestTarget
 
         if (this.match)
         {
-          console.log("Matching!");
-        }
-        else
-        {
-          console.log("Not Matching!");
+          console.log("Matching " + potentialTarget);
         }
       }
     );

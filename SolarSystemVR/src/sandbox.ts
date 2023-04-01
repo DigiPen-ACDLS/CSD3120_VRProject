@@ -75,26 +75,25 @@ export class SandboxVR extends WebXRApp
   private createSpheresAndTargets(): void
   {
     var spheres: TestSphere[] = [
-      new TestSphere("A", 0.5, this.currentScene.scene)
+      new TestSphere("A", 0.5, this.currentScene.scene),
+      new TestSphere("B", 1.0, this.currentScene.scene),
+      new TestSphere("C", 0.8, this.currentScene.scene)
     ]
 
     // A
     spheres[0].mesh.position = new BABYLON.Vector3(0,1,0);
-
-    const triggerA = new TestTarget(spheres[0], spheres , this.currentScene.scene);
+    const triggerA = new TestTarget(spheres[0], spheres, this.currentScene.scene);
     triggerA.mesh.position = new BABYLON.Vector3(0,0.5,-2);
-    
-    // const sphereB = new TestSphere("B", 1.0, this.currentScene.scene);
-    // const sphereC = new TestSphere("C", 0.8, this.currentScene.scene);
 
-    // sphereB.mesh.position = new BABYLON.Vector3(0,1,2);
-    // sphereC.mesh.position = new BABYLON.Vector3(2,0,3);
+    // B
+    spheres[1].mesh.position = new BABYLON.Vector3(-1,1,0);
+    const triggerB = new TestTarget(spheres[1], spheres, this.currentScene.scene);
+    triggerB.mesh.position = new BABYLON.Vector3(1,0.5,-2);
 
-    
-    // this.spheres.set("B", sphereB);
-    // this.spheres.set("C", sphereC);
-
-    
+    // C
+    spheres[2].mesh.position = new BABYLON.Vector3(1,1,0);
+    const triggerC = new TestTarget(spheres[2], spheres, this.currentScene.scene);
+    triggerC.mesh.position = new BABYLON.Vector3(-1,0.5,-2);
   }
 
   
