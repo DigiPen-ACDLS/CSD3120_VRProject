@@ -3,7 +3,8 @@
   @author         Diren D Bharwani, 2002216
 */
 
-import * as BABYLON from "babylonjs"
+import * as BABYLON from "babylonjs";
+import Ammo from "ammojs-typed";
 import { XRMode, XRScene } from "./xr_scene";
 
 /**

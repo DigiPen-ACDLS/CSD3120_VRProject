@@ -1,12 +1,14 @@
 
 import * as BABYLON from "babylonjs";
+import "regenerator-runtime";
+import Ammo from "ammojs-typed";
+
 import { WebXRApp, XRMode, XRScene } from "./app";
-import { TestTrigger, TestSphere } from "./test";
+import { TestTarget, TestSphere } from "./test";
 
 export class SandboxVR extends WebXRApp
 {
-  private spheres : Map<string, TestSphere>;
-  private triggers: Map<string, TestTrigger>;
+  private triggers: Map<string, TestTarget>;
 
   //===========================================================================
   // Constructors & Destructor
@@ -17,8 +19,7 @@ export class SandboxVR extends WebXRApp
     // WebXRApp's ctor
     super(engine, canvas);
 
-    this.spheres = new Map<string, TestSphere>();
-    this.triggers = new Map<string, TestTrigger>();
+    this.triggers = new Map<string, TestTarget>();
   }
 
   //===========================================================================
@@ -34,9 +35,8 @@ export class SandboxVR extends WebXRApp
     var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), this.currentScene.scene);
     light.intensity = 0.7;
 
-    await this.createSpheres();
     await this.createFloor();
-    // await this.createTriggers();
+    await this.createSpheresAndTargets();
 
     await super.Init();
   }
@@ -66,40 +66,36 @@ export class SandboxVR extends WebXRApp
     this.currentScene.scene.activeCamera = this.currentScene.user.camera;
   }
 
-  private createSpheres(): void
-  {
-    const sphereA = new TestSphere("A", 0.5, this.currentScene.scene);
-    const sphereB = new TestSphere("B", 1.0, this.currentScene.scene);
-    const sphereC = new TestSphere("C", 0.8, this.currentScene.scene);
-
-    sphereA.mesh.position = new BABYLON.Vector3(-2,2,3);
-    sphereB.mesh.position = new BABYLON.Vector3(0,1,2);
-    sphereC.mesh.position = new BABYLON.Vector3(2,0,3);
-
-    this.spheres.set("A", sphereA);
-    this.spheres.set("B", sphereB);
-    this.spheres.set("C", sphereC);
-  }
-
   private createFloor(): void
   {
     const ground = BABYLON.MeshBuilder.CreateGround("Ground", {width:10, height:10}, this.currentScene.scene);
-    ground.position = new BABYLON.Vector3(0,-1,0);
+    ground.position = new BABYLON.Vector3(0,0,0);
   }
 
-  private createTriggers(): void
+  private createSpheresAndTargets(): void
   {
-    const triggerA = new TestTrigger("A", this.currentScene.scene);
-    const triggerB = new TestTrigger("B", this.currentScene.scene);
-    const triggerC = new TestTrigger("C", this.currentScene.scene);
-    
-    triggerA.mesh.position = new BABYLON.Vector3(-1,0,0);
-    triggerB.mesh.position = new BABYLON.Vector3(0,0,0);
-    triggerC.mesh.position = new BABYLON.Vector3(1,0,0);
+    var spheres: TestSphere[] = [
+      new TestSphere("A", 0.5, this.currentScene.scene)
+    ]
 
-    const potentialTargets: string[] = [ "A", "B", "C" ];
-    triggerA.RegisterTargetIntersections(this.currentScene.scene,  potentialTargets);
-    triggerB.RegisterTargetIntersections(this.currentScene.scene,  potentialTargets);
-    triggerC.RegisterTargetIntersections(this.currentScene.scene,  potentialTargets);
+    // A
+    spheres[0].mesh.position = new BABYLON.Vector3(0,1,0);
+
+    const triggerA = new TestTarget(spheres[0], spheres , this.currentScene.scene);
+    triggerA.mesh.position = new BABYLON.Vector3(0,0.5,-2);
+    
+    // const sphereB = new TestSphere("B", 1.0, this.currentScene.scene);
+    // const sphereC = new TestSphere("C", 0.8, this.currentScene.scene);
+
+    // sphereB.mesh.position = new BABYLON.Vector3(0,1,2);
+    // sphereC.mesh.position = new BABYLON.Vector3(2,0,3);
+
+    
+    // this.spheres.set("B", sphereB);
+    // this.spheres.set("C", sphereC);
+
+    
   }
+
+  
 };

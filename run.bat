@@ -21,13 +21,13 @@ set e=%errorlevel%
 
 if e==Y (goto update) else (goto run)
 
-:update
+: update
 echo Updating Dependencies...
 call npm update
 echo All Dependencies Updated!
 goto run
 
-:run
+: run
 echo Running SolarSystemVR...
 call npm run start
 

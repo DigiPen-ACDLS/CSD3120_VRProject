@@ -1,69 +1,65 @@
 
 import * as BABYLON from "babylonjs";
+import { TestSphere } from "./test_sphere";
 
-export class TestTrigger
+export class TestTarget
 {
-  public targets              : Set<string>;
   public target               : string;
   public mesh                 : BABYLON.AbstractMesh;
+  public intersectObservable  : BABYLON.Observable<boolean>;
+  public match                : boolean;
 
-  constructor(target: string, scene: BABYLON.Scene)
+  constructor(target: TestSphere, targets: TestSphere[], scene: BABYLON.Scene)
   {
-    this.target = target;
-    const meshName = target + "_trigger";
+    this.target     = target.name;
+    const meshName  = target.name + "_target";
+    
+    this.match      = false;
 
     // Create a sphere
-    this.mesh = BABYLON.MeshBuilder.CreateSphere(meshName, {diameter: 0.5}, scene);
+    this.mesh = BABYLON.MeshBuilder.CreateSphere(meshName, {diameter: 0.2}, scene);
     this.mesh.checkCollisions = true;
     this.mesh.isVisible       = true;
     this.mesh.isPickable      = false;
 
-    this.mesh.actionManager   = new BABYLON.ActionManager(scene);
-  }
+    this.intersectObservable = new BABYLON.Observable<boolean>();
+    
+    var currentTarget   : string = null;
+    var potentialTarget : string = null;
 
-  public RegisterTargetIntersections(scene: BABYLON.Scene, potentialTargets: string[]): void
-  {
-    for (const potentialTarget in potentialTargets)
+    for (const t of targets)
     {
-      // Push target name into container on enter
-      this.mesh.actionManager?.registerAction
+      scene.onBeforeRenderObservable.add
       (
-        new BABYLON.ExecuteCodeAction
-        ( 
+        () =>
+        {
+          let IS_INTERSECTING = this.mesh.intersectsMesh(t.mesh, true, true);
+          if (IS_INTERSECTING)
           {
-            trigger   : BABYLON.ActionManager.OnIntersectionEnterTrigger,
-            parameter : scene.getMeshByName(potentialTarget)
-          },
-          () =>
-          {
-            this.targets.add(potentialTarget);
-
-            console.log("Adding " + potentialTarget);
-            for (const target in this.targets)
-              console.log(target);
+            currentTarget     = target.name;
+            potentialTarget   = t.name;
           }
-        )
-      );
 
-      // Remove target name on exit
-      this.mesh.actionManager?.registerAction
-      (
-        new BABYLON.ExecuteCodeAction
-        ( 
-          {
-            trigger   : BABYLON.ActionManager.OnIntersectionExitTrigger,
-            parameter : scene.getMeshByName(potentialTarget)
-          },
-          () =>
-          {
-            this.targets.delete(potentialTarget);
-
-            console.log("Removing " + potentialTarget);
-            for (const target in this.targets)
-              console.log(target);
-          }
-        )
+          this.intersectObservable.notifyObservers(IS_INTERSECTING);
+        }
       );
     }
+
+    this.intersectObservable.add
+    (
+      async (intersecting)=>
+      {
+        this.match = (intersecting && currentTarget === potentialTarget);
+
+        if (this.match)
+        {
+          console.log("Matching!");
+        }
+        else
+        {
+          console.log("Not Matching!");
+        }
+      }
+    );
   }
 };
