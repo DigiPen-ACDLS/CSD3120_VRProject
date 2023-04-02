@@ -7,6 +7,7 @@
 // Packages
 import 
 { 
+    AbstractMesh,
   Animation,
   Color3,
   Engine, 
@@ -16,6 +17,7 @@ import
   PhotoDome,
   Scene,
   UniversalCamera,
+  Vector2,
   Vector3 
 } from "babylonjs";
 
@@ -46,6 +48,8 @@ import
   CameraType, 
   Entity 
 } from "./objects";
+import { BillboardMode } from "./utilities/enums";
+import { TextWrapper, TextWrapping } from "babylonjs-gui";
 
 //=============================================================================
 // Type Definitions
@@ -100,8 +104,6 @@ export class SolarSystemVRApp extends WebXRApp
     await this.SetPlatformPositions();
     await this.SetPlanetPositions();
     await this.CreateRoof();
-
-    
    }
     
 
@@ -176,7 +178,7 @@ export class SolarSystemVRApp extends WebXRApp
       'uranus',
       'neptune',
       'lab',
-      'platform'
+      'platform0'
     ];
 
     const promises      = await this.assetLoader.LoadMeshes(filepaths, names);
@@ -191,55 +193,202 @@ export class SolarSystemVRApp extends WebXRApp
 
   private SetPlatformPositions(): void
   {
-    this.entities.get('platform').mesh.scaling.setAll(0.2);
-    this.entities.get('platform').mesh.position = new Vector3(-12.2, 17.5, -6.0);
-    for(let i = 0; i < 7; ++i)
+    this.entities.get('platform0').mesh.scaling.setAll(0.2);
+    this.entities.get('platform0').mesh.position = new Vector3(-12.2, 17.5, -6.0);
+    for(let i = 1; i < 8; ++i)
     {
-      var plat = this.entities.get('platform').mesh.clone('platform' + i.toString(), null);
+      var plat = this.entities.get('platform0').mesh.clone('platform' + i.toString(), null);
       plat.scaling.setAll(0.2);
-      plat.position = new Vector3(-12.2, 17.5, 6 * i);
+      plat.position = new Vector3(-12.2, 17.5, 6 * (i-1));
 
       this.entities.set('platform' + i.toString(), new Entity('platform' + i.toString(), plat));
     }
+
+    for(let i = 0; i < 8; ++i)
+    {
+        this.entities.get('platform' + i.toString()).AddUITextPlane(
+            "platform",{
+                position: new Vector3(-20, 3, 0),
+                rotation: new Vector3(Math.PI / 2, Math.PI / 2, 0),
+                fontSize: 64
+            },
+            this.currentScene.scene
+            );
+    }
+    this.entities.get('platform0').textLabel.textBlock.text = "Mercury";
+    this.entities.get('platform1').textLabel.textBlock.text = "Venus";
+    this.entities.get('platform2').textLabel.textBlock.text = "Earth";
+    this.entities.get('platform3').textLabel.textBlock.text = "Mars";
+    this.entities.get('platform4').textLabel.textBlock.text = "Jupiter";
+    this.entities.get('platform5').textLabel.textBlock.text = "Saturn";
+    this.entities.get('platform6').textLabel.textBlock.text = "Uranus";
+    this.entities.get('platform7').textLabel.textBlock.text = "Neptune";
   }
 
   private SetPlanetPositions(): void
   {
     // Planets
-    this.entities.get('mercury').mesh.position = new Vector3(-12.2, 19.5, -6.0);
-    this.entities.get('mercury').SetDraggable(true);
-    this.entities.get('mercury').mesh.scaling.setAll(1.2);
+    const mercury = this.entities.get('mercury');
+    const venus   = this.entities.get('venus');
+    const earth   = this.entities.get('earth');
+    const moon    = this.entities.get('moon');
+    const mars    = this.entities.get('mars');
+    const jupiter = this.entities.get('jupiter');
+    const saturn  = this.entities.get('saturn');
+    const uranus  = this.entities.get('uranus');
+    const neptune = this.entities.get('neptune');
 
-    this.entities.get('venus').mesh.position = new Vector3(-12.2, 19.5, 0.0);
-    this.entities.get('venus').SetDraggable(true);
-    this.entities.get('venus').mesh.scaling.setAll(0.4);
+    //Mercury
+    mercury.mesh.position = new Vector3(-12.2, 19.5, -6.0);
+    mercury.SetDraggable(true);
+    mercury.mesh.scaling.setAll(1.2);
+    
+    //Animations
+    this.StartPlanetAnimations(this.entities.get('mercury').mesh);
 
-    this.entities.get('earth').mesh.position = new Vector3(-12.2, 19.5, 6.0);
-    this.entities.get('earth').mesh.scaling.setAll(0.001);
-    this.entities.get('earth').SetDraggable(true);
-    this.entities.get('earth').mesh.addChild(this.entities.get('moon').mesh);
-    this.entities.get('moon').mesh.scaling.setAll(0.3);
-    this.entities.get('moon').mesh.position = new Vector3(700, 700, 0);
+    //UI TextPlane Mercury
+    mercury.AddUITextPlane("MercuryInformation",
+    {
+        position : new Vector3(0, 7, 0),
+        planeDim : new Vector2(10, 12),
+        billboard: BillboardMode.ALL,
+    }, this.currentScene.scene);
+    mercury.textLabel.textBlock.text = "FUN FACT MERCURY IS SMALLER THAN YOUR MOM BECAUSE YO MAMA SO FAT THAT DORA CAN'T EVEN EXPLORE HER!"
+    mercury.textLabel.textBlock.textWrapping = true;
 
-    this.entities.get('mars').mesh.position = new Vector3(-12.2, 19.5, 12.0);
-    this.entities.get('mars').SetDraggable(true);
-    this.entities.get('mars').mesh.scaling.setAll(0.5);
+    //Venus
+    venus.mesh.position = new Vector3(-12.2, 19.5, 0.0);
+    venus.SetDraggable(true);
+    venus.mesh.scaling.setAll(0.4);
 
-    this.entities.get('jupiter').mesh.position = new Vector3(-12.2, 20.2, 18.0);
-    this.entities.get('jupiter').SetDraggable(true);
-    this.entities.get('jupiter').mesh.scaling.setAll(0.07);
+    //Animations
+    this.StartPlanetAnimations(this.entities.get('venus').mesh);
 
-    this.entities.get('saturn').mesh.position = new Vector3(-12.2, 20.2, 24.0);
-    this.entities.get('saturn').SetDraggable(true);
-    this.entities.get('saturn').mesh.scaling.setAll(0.0025);
+    //UI TextPlane Venus
+    venus.AddUITextPlane("VenusInformation",
+    {
+        position : new Vector3(0, 21, 0),
+        planeDim : new Vector2(10, 12),
+        billboard: BillboardMode.ALL
+    }, this.currentScene.scene);
+    venus.textLabel.textBlock.text = "FUN FACT VENUS IS SMALLER THAN YOUR MOM BECAUSE YO MAMA SO FAT THAT DORA CAN'T EVEN EXPLORE HER!"
+    venus.textLabel.textBlock.textWrapping = true;
 
-    this.entities.get('uranus').mesh.position = new Vector3(-12.2, 19.9, 30.0);
-    this.entities.get('uranus').SetDraggable(true);
-    this.entities.get('uranus').mesh.scaling.setAll(0.00002);
+    //Earth & Moon
+    earth.mesh.position = new Vector3(-12.2, 19.5, 6.0);
+    earth.mesh.scaling.setAll(0.001);
+    earth.SetDraggable(true);
+    earth.mesh.addChild(moon.mesh);
+    moon.mesh.scaling.setAll(0.3);
+    moon.mesh.position = new Vector3(700, 700, 0);
 
-    this.entities.get('neptune').mesh.position = new Vector3(-12.2, 19.9, 36.0);
-    this.entities.get('neptune').SetDraggable(true);
-    this.entities.get('neptune').mesh.scaling.setAll(0.12);
+    //Animation
+    this.StartPlanetAnimations(this.entities.get('earth').mesh);
+
+    //UI TextPlane Earth & Moon
+    earth.AddUITextPlane("EarthInformation",
+    {
+        position : new Vector3(0, 8400, 0),
+        planeDim : new Vector2(10, 12),
+        billboard: BillboardMode.ALL,
+    }, this.currentScene.scene);
+    earth.textLabel.textBlock.text = "FUN FACT EARTH IS SMALLER THAN YOUR MOM BECAUSE YO MAMA SO FAT THAT DORA CAN'T EVEN EXPLORE HER!"
+    earth.textLabel.textBlock.textWrapping = true;
+
+    //Mars
+    mars.mesh.position = new Vector3(-12.2, 19.5, 12.0);
+    mars.SetDraggable(true);
+    mars.mesh.scaling.setAll(0.5);
+
+    //Animations
+    this.StartPlanetAnimations(mars.mesh);
+
+    //UI TextPlane Mars
+    mars.AddUITextPlane("MarsInformation",
+    {
+        position : new Vector3(0, 16.8, 0),
+        planeDim : new Vector2(10, 12),
+        billboard: BillboardMode.ALL,
+    }, this.currentScene.scene);
+    mars.textLabel.textBlock.text = "FUN FACT MARS IS SMALLER THAN YOUR MOM BECAUSE YO MAMA SO FAT THAT DORA CAN'T EVEN EXPLORE HER!"
+    mars.textLabel.textBlock.textWrapping = true;
+
+    //Jupiter
+    jupiter.mesh.position = new Vector3(-12.2, 20.2, 18.0);
+    jupiter.SetDraggable(true);
+    jupiter.mesh.scaling.setAll(0.07);
+
+    //Animations
+    this.StartPlanetAnimations(jupiter.mesh);
+
+    //UI TextPlane Jupiter
+    jupiter.AddUITextPlane("JupiterInformation",
+    {
+        position : new Vector3(0, 110, 0),
+        planeDim : new Vector2(10, 12),
+        billboard: BillboardMode.ALL,
+    }, this.currentScene.scene);
+    jupiter.textLabel.textBlock.text = "FUN FACT JUPITER IS SMALLER THAN YOUR MOM BECAUSE YO MAMA SO FAT THAT DORA CAN'T EVEN EXPLORE HER!"
+    jupiter.textLabel.textBlock.textWrapping = true;
+
+    //Saturn
+    saturn.mesh.position = new Vector3(-12.2, 20.2, 24.0);
+    saturn.SetDraggable(true);
+    saturn.mesh.scaling.setAll(0.0025);
+
+    //Animations
+    this.StartPlanetAnimations(saturn.mesh);
+
+    //UI TextPlane Saturn
+    saturn.AddUITextPlane("SaturnInformation",
+    {
+        position : new Vector3(0, 3080, 0),
+        planeDim : new Vector2(10, 12),
+        billboard: BillboardMode.ALL,
+    }, this.currentScene.scene);
+    saturn.textLabel.textBlock.text = "FUN FACT SATURN IS SMALLER THAN YOUR MOM BECAUSE YO MAMA SO FAT THAT DORA CAN'T EVEN EXPLORE HER!"
+    saturn.textLabel.textBlock.textWrapping = true;
+
+    //Uranus
+    uranus.mesh.position = new Vector3(-12.2, 20.2, 30.0);
+    uranus.SetDraggable(true);
+    uranus.mesh.scaling.setAll(0.01);
+
+    //Animations
+    this.StartPlanetAnimations(uranus.mesh);
+
+    //UI TextPlane Uranus
+    uranus.AddUITextPlane("UranusInformation",
+    {
+        position : new Vector3(0, 770, 0),
+        planeDim : new Vector2(10, 12),
+        billboard: BillboardMode.ALL,
+    }, this.currentScene.scene);
+    uranus.textLabel.textBlock.text = "FUN FACT URANUS IS SMALLER THAN YOUR MOM BECAUSE YO MAMA SO FAT THAT DORA CAN'T EVEN EXPLORE HER!"
+    uranus.textLabel.textBlock.textWrapping = true;
+
+    //Neptune
+    neptune.mesh.position = new Vector3(-12.2, 19.9, 36.0);
+    neptune.SetDraggable(true);
+    neptune.mesh.scaling.setAll(0.12);
+
+    //Animations
+    this.StartPlanetAnimations(neptune.mesh);
+
+    //UI TextPlane Neptune
+    neptune.AddUITextPlane("NeptuneInformation",
+    {
+        position : new Vector3(0, 66.8, 0),
+        planeDim : new Vector2(10, 12),
+        billboard: BillboardMode.ALL,
+    }, this.currentScene.scene);
+    neptune.textLabel.textBlock.text = "FUN FACT NEPTUNE IS SMALLER THAN YOUR MOM BECAUSE YO MAMA SO FAT THAT DORA CAN'T EVEN EXPLORE HER!"
+    neptune.textLabel.textBlock.textWrapping = true;
+  }
+
+  private SetPlanetSpace(): void
+  {
+
   }
 
   private async CreateRoof(): Promise<void>
@@ -292,5 +441,40 @@ export class SolarSystemVRApp extends WebXRApp
     plane.animations = [];
     plane.animations.push(roofAnimation);
     plane.animations.push(roofMove);
+  }
+
+  private StartPlanetAnimations(mesh : AbstractMesh) : void
+  {
+    const planetRotAnimation = new Animation('rotationAnima', 
+    'rotation', 
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CYCLE);
+
+    const planetFloatAnimation = new Animation('positionAnima',
+    'position',
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CYCLE
+    )
+
+    const keyframes = [
+        {frame: 0, value : mesh.rotation},
+        {frame: 120, value : mesh.rotation.add(new Vector3(0, Math.PI * 2, 0))}
+    ]
+
+    const keyposframes = [
+        {frame: 0, value : mesh.position},
+        {frame: 60, value : mesh.position.add(new Vector3(0, 0.2, 0))},
+        {frame: 120, value : mesh.position}
+    ]
+
+    planetRotAnimation.setKeys(keyframes);
+    planetFloatAnimation.setKeys(keyposframes);
+    mesh.animations = [];
+    mesh.animations.push(planetRotAnimation);
+    mesh.animations.push(planetFloatAnimation);
+
+    this.currentScene.scene.beginAnimation(mesh, 0, 120, true);
   }
 };

@@ -12,8 +12,12 @@ import
   PointerDragBehavior, 
   Scene, 
   Texture, 
+  Vector2, 
   Vector3 
 } from "babylonjs";
+import { TextWrapping } from "babylonjs-gui";
+import { ThinSprite } from "babylonjs/Sprites/thinSprite";
+import { BillboardMode } from "../utilities/enums";
 
 // Local Imports
 import 
@@ -113,4 +117,28 @@ export class Entity
     }
   }
 
+  public AddUITextPlane(name : string, 
+    options:
+    {
+      position?   : Vector3,
+      rotation?   : Vector3,
+      fontSize?   : number,
+      planeDim?   : Vector2,
+      billboard?  : BillboardMode,
+    }
+    , scene : Scene)
+  {
+    const uiCreateInfo = new UITextCreateInfo(name);
+    uiCreateInfo.fontSize           = options.fontSize || 32;
+    uiCreateInfo.planeDimensions    = options.planeDim || new Vector2(4.5, 2.5);
+    uiCreateInfo.planePosition      = new Vector3(0, 0, 0);
+    uiCreateInfo.planeRotation      = new Vector3(0, 0, 0);
+    uiCreateInfo.billboardmode      = options.billboard || BillboardMode.None;
+    uiCreateInfo.text               = "Hello World";
+    
+    this.textLabel = new UIText(uiCreateInfo, scene);
+    this.mesh.addChild(this.textLabel.plane);
+    this.textLabel.plane.position = options.position || new Vector3(0, 0, 0);
+    this.textLabel.plane.rotation = options.rotation || new Vector3(0, 0, 0);
+  }
 }

@@ -98,7 +98,7 @@ export class XRScene
     }
 
     // Start in XR mode by default
-    xr.baseExperience.enterXRAsync(xrMode, "local-floor");
+    //xr.baseExperience.enterXRAsync(xrMode, "local-floor");
 
     // Attach the features manager. Features can be enabled through another experience
     this.featuresManager  = xr.baseExperience.featuresManager;
