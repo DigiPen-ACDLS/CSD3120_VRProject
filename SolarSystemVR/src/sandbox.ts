@@ -1,7 +1,5 @@
 
 import * as BABYLON from "babylonjs";
-import "regenerator-runtime";
-import Ammo from "ammojs-typed";
 
 import { WebXRApp, XRMode, XRScene } from "./app";
 import { TestTarget, TestSphere } from "./test";

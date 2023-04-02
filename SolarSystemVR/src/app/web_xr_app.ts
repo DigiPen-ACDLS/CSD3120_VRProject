@@ -4,7 +4,6 @@
 */
 
 import * as BABYLON from "babylonjs";
-import Ammo from "ammojs-typed";
 import { XRMode, XRScene } from "./xr_scene";
 
 /**

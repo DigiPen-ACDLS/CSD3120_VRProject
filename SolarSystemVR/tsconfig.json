@@ -7,7 +7,7 @@
     "noResolve"           : false,        /* */
     "rootDir"             : "src",        /* */
     "types"               : [
-      "babylonjs", "babylonjs-gui"    
+      "babylonjs", "babylonjs-gui"
     ],
 
     /* Type Checking */
