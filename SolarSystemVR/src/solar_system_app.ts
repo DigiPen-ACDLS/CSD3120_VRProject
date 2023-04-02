@@ -83,6 +83,8 @@ export class SolarSystemVRApp extends WebXRApp
   {
     this.currentScene = new XRScene(XRMode.VR, this.engine);
 
+    await super.Init();
+
     // //Enable Gizmo
     // const gizmoManager = new GizmoManager(this.currentScene.scene);
     // gizmoManager.positionGizmoEnabled = true;
@@ -99,7 +101,7 @@ export class SolarSystemVRApp extends WebXRApp
     await this.SetPlanetPositions();
     await this.CreateRoof();
 
-    await super.Init();
+    
    }
     
 

@@ -4,7 +4,7 @@ import * as BABYLON from "babylonjs";
 import { WebXRApp, XRMode, XRScene } from "./app";
 import { TestTarget, TestSphere } from "./test";
 import { CameraConfig, CameraType } from "./objects";
-import { UniversalCamera, Vector3 } from "babylonjs";
+import { UniversalCamera, Vector3, WebXRCamera } from "babylonjs";
 
 export class SandboxVR extends WebXRApp
 {
@@ -31,6 +31,7 @@ export class SandboxVR extends WebXRApp
   public async Init(): Promise<void>
   {
     this.currentScene = new XRScene(XRMode.VR, this.engine);
+    await super.Init();
 
     this.initUser();
 
@@ -41,7 +42,7 @@ export class SandboxVR extends WebXRApp
     await this.createSpheresAndTargets();
     await this.createButton();
     
-    await super.Init();
+    
   }
 
   public Update(): void
@@ -60,15 +61,18 @@ export class SandboxVR extends WebXRApp
 
   private initUser(): void
   {
-    const cameraConfig: CameraConfig = new CameraConfig(CameraType.Universal, "XRUserCamera", new Vector3(0, 2, -10));
-    this.currentScene.user.CreateCamera(cameraConfig);
+    const universalCamera = new UniversalCamera("Camera", new Vector3(0, 3, -5), this.currentScene.scene);
+    universalCamera.minZ  = 0.01;
+    universalCamera.speed = 0.3;
+  
+    universalCamera.attachControl(this.canvas, true);
 
-    this.currentScene.user.camera.minZ      = 0.01;
+    const xrCamera        = new WebXRCamera("XRCamera", this.currentScene.scene, this.currentScene.sessionManager);
+    xrCamera.setTransformationFromNonVRCamera(universalCamera);
+    xrCamera.attachControl(this.canvas, true);
 
-    (this.currentScene.user.camera as UniversalCamera).speed = 0.3;
-    this.currentScene.user.camera.attachControl(this.canvas, true);
-
-    this.currentScene.scene.activeCamera = this.currentScene.user.camera;
+    this.currentScene.scene.activeCamera  = xrCamera;
+    this.currentScene.user.camera         = xrCamera;
   }
 
   private createFloor(): void

@@ -8,7 +8,8 @@ import
 {
   Engine,
   Scene,
-  WebXRFeaturesManager
+  WebXRFeaturesManager,
+  WebXRSessionManager
 } from "babylonjs";
 
 // Local Imports
@@ -42,6 +43,7 @@ export class XRScene
 
   public   scene            : Scene;
   public   featuresManager  : WebXRFeaturesManager;
+  public   sessionManager   : WebXRSessionManager;
 
   public   user             : XRUser;
 
@@ -78,7 +80,7 @@ export class XRScene
     const xr = await this.scene.createDefaultXRExperienceAsync({
       uiOptions: { sessionMode: xrMode }
     });
-
+    
     (window as any).xr = xr;
 
     // Enable toggling of the scene's inspector
@@ -95,8 +97,12 @@ export class XRScene
       });
     }
 
+    // Start in XR mode by default
+    xr.baseExperience.enterXRAsync(xrMode, "local-floor");
+
     // Attach the features manager. Features can be enabled through another experience
-    this.featuresManager = xr.baseExperience.featuresManager;
+    this.featuresManager  = xr.baseExperience.featuresManager;
+    this.sessionManager   = xr.baseExperience.sessionManager;
   }
 
 };
