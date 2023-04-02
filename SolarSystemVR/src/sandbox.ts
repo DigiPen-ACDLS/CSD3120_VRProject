@@ -8,7 +8,7 @@ import { TestTarget, TestSphere } from "./test";
 
 export class SandboxVR extends WebXRApp
 {
-  private spheres : TestSphere[];
+  private spheres: TestSphere[];
   private triggers: TestTarget[];
 
   //===========================================================================
@@ -41,7 +41,6 @@ export class SandboxVR extends WebXRApp
     await this.createSpheresAndTargets();
     await this.createButton();
     
-
     await super.Init();
   }
 

@@ -16,20 +16,24 @@ async function main(): Promise<void>
 
   // Set up the application
 
-  // const solarSystemApp  = new SolarSystemVRApp(babylonEngine, renderCanvas);
+  // 
 
-  // solarSystemApp.Init();
-  // solarSystemApp.Update();
-  // solarSystemApp.Exit();
 
-  const testApp = new SandboxVR(babylonEngine, renderCanvas);
+  // 
 
-  await testApp.Init();
-  testApp.Update();
+  const solarSystemApp  = new SolarSystemVRApp(babylonEngine, renderCanvas);
+  // const testApp = new SandboxVR(babylonEngine, renderCanvas);
+
+  await solarSystemApp.Init();
+  solarSystemApp.Update();
+
+  // await testApp.Init();
+  // testApp.Update();
 
   window.addEventListener("resize", () => { babylonEngine.resize() });
 
-  testApp.Exit();
+  solarSystemApp.Exit();
+  // testApp.Exit();
 }
 
 // Run main

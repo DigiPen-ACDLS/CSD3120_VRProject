@@ -3,8 +3,19 @@
   @author         Diren D Bharwani, 2002216
 */
 
-import * as BABYLON from "babylonjs";
-import { CameraType, CameraConfig, XRUser } from "../objects";
+// Packages
+import 
+{
+  Engine,
+  Scene,
+  WebXRFeaturesManager
+} from "babylonjs";
+
+// Local Imports
+import 
+{ 
+  XRUser 
+} from "../objects";
 
 //=============================================================================
 // Type Definitions
@@ -13,7 +24,11 @@ import { CameraType, CameraConfig, XRUser } from "../objects";
 /**
  * The type of the XRScene.
  */
-export enum XRMode{ VR, AR };
+export enum XRMode
+{ 
+  VR, 
+  AR 
+};
 
 export class XRScene
 {
@@ -25,30 +40,27 @@ export class XRScene
 
   // Babylon components
 
-  public   scene            : BABYLON.Scene;
-  public   featuresManager  : BABYLON.WebXRFeaturesManager;
+  public   scene            : Scene;
+  public   featuresManager  : WebXRFeaturesManager;
 
-  public   user            : XRUser;
+  public   user             : XRUser;
 
   //===========================================================================
   // Constructors & Destructor
   //===========================================================================
 
-  constructor(mode: XRMode, engine: BABYLON.Engine)
+  constructor(mode: XRMode, engine: Engine)
   {
     this.type = mode;
 
     // Hide the inspector by default.
-    this.scene = new BABYLON.Scene(engine);
+    this.scene = new Scene(engine);
     this.scene.debugLayer.hide();
 
     this.scene.collisionsEnabled = true;
 
-    // Create user & Free Camera by default
+    // Create an empty user.
     this.user = new XRUser(this);
-
-    const cameraInfo = new CameraConfig(CameraType.Free, "XRUserCamera");
-    this.user.CreateCamera(cameraInfo);
   }
 
   //===========================================================================
