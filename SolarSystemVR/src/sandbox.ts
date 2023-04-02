@@ -5,6 +5,8 @@ import Ammo from "ammojs-typed";
 
 import { WebXRApp, XRMode, XRScene } from "./app";
 import { TestTarget, TestSphere } from "./test";
+import { CameraConfig, CameraType } from "./objects";
+import { UniversalCamera, Vector3 } from "babylonjs";
 
 export class SandboxVR extends WebXRApp
 {
@@ -60,10 +62,12 @@ export class SandboxVR extends WebXRApp
 
   private initUser(): void
   {
-    this.currentScene.user.camera.position  = new BABYLON.Vector3(0, 2, -10);
+    const cameraConfig: CameraConfig = new CameraConfig(CameraType.Universal, "XRUserCamera", new Vector3(0, 2, -10));
+    this.currentScene.user.CreateCamera(cameraConfig);
+
     this.currentScene.user.camera.minZ      = 0.01;
 
-    (this.currentScene.user.camera as BABYLON.FreeCamera).speed = 0.3;
+    (this.currentScene.user.camera as UniversalCamera).speed = 0.3;
     this.currentScene.user.camera.attachControl(this.canvas, true);
 
     this.currentScene.scene.activeCamera = this.currentScene.user.camera;

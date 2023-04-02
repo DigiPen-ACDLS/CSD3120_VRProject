@@ -94,38 +94,12 @@ export class SolarSystemVRApp extends WebXRApp
     hemisphericLight.intensity  = 1.0;
     hemisphericLight.diffuse    = new Color3(1, 1, 1);
 
-    // Manually create a photodome
-    new PhotoDome
-    (
-      "space_dome", 
-      "assets/textures/Skybox/space_skydome.jpg",
-      {
-          resolution : 32,
-          size: 1000,
-          useDirectMapping : false
-      },
-      this.currentScene.scene
-    );
-
     await this.loadModelsAndCreateEntities();
     await this.SetPlatformPositions();
     await this.SetPlanetPositions();
     await this.CreateRoof();
 
     await super.Init();
-
-    //Roof animation
-    
-
-    // this.entities.get('platform').mesh.scaling.setAll(0.2);
-    // this.entities.get('platform').mesh.position = new Vector3(-12.2, 17.5, -6.0);
-    // this.entities.get('platform1').mesh.position = new Vector3(-12.2, 17.5, 0.0);
-    // this.entities.get('platform2').mesh.position = new Vector3(-12.2, 17.5, 6.0);
-    // this.entities.get('platform3').mesh.position = new Vector3(-12.2, 17.5, 12.0);
-    // this.entities.get('platform4').mesh.position = new Vector3(-12.2, 17.5, 18.0);
-    // this.entities.get('platform5').mesh.position = new Vector3(-12.2, 17.5, 24.0);
-    // this.entities.get('platform6').mesh.position = new Vector3(-12.2, 17.5, 30.0);
-    // this.entities.get('platform7').mesh.position = new Vector3(-12.2, 17.5, 36.0);
    }
     
 
@@ -150,7 +124,7 @@ export class SolarSystemVRApp extends WebXRApp
 
     (this.currentScene.user.camera as UniversalCamera).minZ     = 0.01;
     (this.currentScene.user.camera as UniversalCamera).target   = new Vector3(-50, 0, 0);
-    (this.currentScene.user.camera as UniversalCamera).speed    = 0.3;
+    (this.currentScene.user.camera as UniversalCamera).speed    = 1.0;
 
     this.currentScene.user.camera.attachControl(this.canvas, true);
     this.currentScene.scene.activeCamera = this.currentScene.user.camera;
@@ -158,6 +132,18 @@ export class SolarSystemVRApp extends WebXRApp
 
   private async loadModelsAndCreateEntities(): Promise<void>
   {
+    new PhotoDome
+    (
+      "space_dome", 
+      "assets/textures/Skybox/space_skydome.jpg",
+      {
+          resolution : 32,
+          size: 10000,
+          useDirectMapping : false
+      },
+      this.currentScene.scene
+    );
+
     //Assets
     this.assetLoader = new AssetLoader(this.currentScene.scene);
 
@@ -199,11 +185,6 @@ export class SolarSystemVRApp extends WebXRApp
         const entity = new Entity(name, mesh);
         this.entities.set(name, entity);
     });
-
-    // Plane
-    
-
-
   }
 
   private SetPlatformPositions(): void
