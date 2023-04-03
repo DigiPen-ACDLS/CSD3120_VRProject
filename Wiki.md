@@ -1,4 +1,4 @@
-#Data collection
+# Data collection
 For data collection for immersion as user experiences, we gave 10 users a survey that consists of 
 questions from iGroup Presence Questionnaire (IPQ), Flow Short Scale questionnaire, and  Virtual 
 Reality Sickness Questionnaire(VRSQ) which test for presence, flow, and cybersickness of user 
@@ -16,7 +16,7 @@ loss of self-consciousness, sense of control, effortlessness, the transformation
 experience. Lastly, cybersickness is a symptom of sickness due to cyber activities which include nausea, 
 dizziness, and disorientation. 
 
-##iGroup Presence Questionnaire (IPQ) (http://www.igroup.org/pq/ipq/index.php)
+## iGroup Presence Questionnaire (IPQ) (http://www.igroup.org/pq/ipq/index.php)
 
 A scale for measuring the sense of presence experienced in a virtual environment (VE).
 
@@ -25,7 +25,7 @@ actions and movements in the virtual environment and how they feel about how the
 responded to their actions and movement is moderate. All users are pleased with the overall experience 
 with the program. 
 
-##Flow Short Scale questionnaire
+## Flow Short Scale questionnaire
 
 A tool used in psychology research to assess an individual's experience of "flow," which is a state 
 of complete absorption and focused concentration in an activity.
@@ -35,7 +35,7 @@ enjoyed it. The goals were clear in the program, however, the interaction with t
 challenging enough, and have moderate control over the movement in the environment. We also notice that 
 the users were focused during the experience and lost track of time in the real world. 
 
-##Virtual Reality Sickness Questionnaire(VRSQ)
+## Virtual Reality Sickness Questionnaire(VRSQ)
 
 A tool used to assess symptoms of motion sickness and other discomforts that may arise during the use of 
 virtual reality (VR) technology. For our survey, we focus mainly on how intense the symptoms are, 
@@ -46,7 +46,7 @@ mostly having headaches, eye strain, and dizziness, and getting disoriented duri
 many indicate that the symptoms weren't intense, indicating a success in mitigating cybersickness to reduce 
 symptoms’ effects.
 
-#Conclusion 
+# Conclusion 
 We made sure to get everyone’s feedback verbally even after they have done the survey to kind of get their 
 immediate opinion on what the experience is like. We also made sure to observe them when they are in VR mode 
 to kind of tell how they react to certain things in the scene.
@@ -66,14 +66,14 @@ Lack of interactions might also have made the application less immersive as it m
 boring however we have attempted to add in different animations as well as better meshes, textures and 
 text planes to improve these problems which took a toll on the fps as well.
 
-#Future works
+# Future works
 Based on the user experience results, we need to improve and add more interaction to the program to further 
 improve the experience of the user and give them a better sense of presence and flow. We also need to 
 solve the issues regarding virtual reality sickness to provide a better and more comfortable experience 
 for the users by optimizing the rendering pipeline or by using different applications that we are more 
 familiar with such as Unity.
 
-#link
+# link
 Link to the folder that has the individual responses 
 //git hub
 
