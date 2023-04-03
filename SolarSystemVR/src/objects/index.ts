@@ -3,6 +3,6 @@
   @author         Diren D Bharwani, 2002216
 */
 
-export * from "./xr_user";
-export * from "./config_objects";
 export * from "./entity";
+export * from "./ui_text";
+export * from "./xr_user";

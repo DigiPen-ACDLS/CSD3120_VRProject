@@ -31,21 +31,25 @@ import
 import 
 { 
   AssetLoader 
-} from "./app/assetloader";
+} from "../app/assetloader";
 
 import 
 { 
   WebXRApp, 
   XRMode, 
   XRScene 
-} from "./app/";
+} from "../app";
 
 import 
 { 
-  CameraConfig, 
-  CameraType, 
-  Entity 
-} from "./objects";
+  Entity, 
+  EntityCreateInfo 
+} from "../objects";
+
+import 
+{
+  CelestialEntity
+} from "./celestial_entity";
 
 //=============================================================================
 // Type Definitions
@@ -121,8 +125,7 @@ export class SolarSystemVRApp extends WebXRApp
 
   private initUser(): void
   {
-    const cameraConfig: CameraConfig = new CameraConfig(CameraType.Universal, "XRUserCamera", new Vector3(-8, 7, 0));
-    this.currentScene.user.CreateCamera(cameraConfig);
+    this.currentScene.CreateDefaultUser(new Vector3(-8, 7, 0));
 
     (this.currentScene.user.camera as UniversalCamera).minZ     = 0.01;
     (this.currentScene.user.camera as UniversalCamera).target   = new Vector3(-50, 0, 0);
@@ -166,27 +169,40 @@ export class SolarSystemVRApp extends WebXRApp
     
     const names = 
     [
-      'mercury', 
-      'venus',
-      'earth',
-      'moon',
-      'mars',
-      'jupiter',
-      'saturn',
-      'uranus',
-      'neptune',
-      'lab',
-      'platform'
+      'mercury',    // 0
+      'venus',      // 1
+      'earth',      // 2
+      'moon',       // 3
+      'mars',       // 4
+      'jupiter',    // 5
+      'saturn',     // 6
+      'uranus',     // 7
+      'neptune',    // 8
+      'lab',        // 9
+      'platform0'   // 10
     ];
 
     const promises      = await this.assetLoader.LoadMeshes(filepaths, names);
     const loadedMeshes  = await Promise.all(promises);
 
-    loadedMeshes.forEach((mesh, i) => {
-        const name = names[i];
-        const entity = new Entity(name, mesh);
-        this.entities.set(name, entity);
-    });
+    // 9 beacuse the moon (8 planets + 1 moon)
+    for (let i = 0; i < 9; ++i)
+    {
+      const entityInfo = new EntityCreateInfo(names[i]);
+      entityInfo.mesh = loadedMeshes[i];
+
+      this.entities.set(names[i], new CelestialEntity(entityInfo, this.currentScene));
+    }
+
+    // Lab
+    const labCreateInfo = new EntityCreateInfo(names[9]);
+    labCreateInfo.mesh = loadedMeshes[9];
+    this.entities.set(names[9], new Entity(labCreateInfo));
+
+    // Platform 0
+    const p0CreateInfo = new EntityCreateInfo(names[10]);
+    p0CreateInfo.mesh = loadedMeshes[10];
+    this.entities.set(names[10], new Entity(p0CreateInfo));
   }
 
   private SetPlatformPositions(): void

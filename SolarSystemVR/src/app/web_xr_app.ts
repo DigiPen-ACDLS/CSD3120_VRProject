@@ -3,8 +3,18 @@
   @author         Diren D Bharwani, 2002216
 */
 
-import * as BABYLON from "babylonjs";
-import { XRMode, XRScene } from "./xr_scene";
+// Packages
+import 
+{ 
+  Engine 
+} from "babylonjs";
+
+// Local Imports
+import 
+{ 
+  XRMode, 
+  XRScene 
+} from "./xr_scene";
 
 /**
  * Base class for a WebXRApp. The scene needs to be initialised before being used.
@@ -16,7 +26,7 @@ export class WebXRApp
   // Data Members
   //===========================================================================
 
-  protected engine        : BABYLON.Engine;
+  protected engine        : Engine;
   protected canvas        : HTMLCanvasElement;
 
   protected currentScene  : XRScene;
@@ -26,7 +36,7 @@ export class WebXRApp
   // Constructors & Destructor
   //===========================================================================
 
-  constructor(engine: BABYLON.Engine, canvas: HTMLCanvasElement)
+  constructor(engine: Engine, canvas: HTMLCanvasElement)
   {
     this.engine = engine;
     this.canvas = canvas;

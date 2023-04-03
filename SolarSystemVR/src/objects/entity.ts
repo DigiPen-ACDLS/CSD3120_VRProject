@@ -1,6 +1,6 @@
 /**
   @fileoverview   Implementation of a simple entity.
-  @author         Leonard Loser, 369369369
+  @author         Leonard Lee, 369369369
 */
 
 
@@ -11,6 +11,7 @@ import
   Material, 
   PointerDragBehavior, 
   Scene, 
+  StandardMaterial, 
   Texture, 
   Vector3 
 } from "babylonjs";
@@ -26,6 +27,24 @@ import
 // Type Definitions
 //=============================================================================
 
+export class EntityCreateInfo
+{
+  public    name            : string;
+  public    mesh            : AbstractMesh;
+  public    texture         : Texture;
+  public    material        : Material;
+
+  constructor(entityName: string)
+  {
+    this.name = entityName;
+    
+    // Nulled
+    this.mesh     = null;
+    this.texture  = null;
+    this.material = null;
+  }
+}
+
 /**
  * Encapsulates an entity in the scene.
  */
@@ -37,80 +56,32 @@ export class Entity
 
   public    name            : string;
   public    mesh            : AbstractMesh;
-  public    texture         : Texture;
   public    material        : Material;
-  public    textLabel       : UIText;
-
-  private   verticalDrag    : PointerDragBehavior;
-  private   horizontalDrag  : PointerDragBehavior;
-    
+  public    texture         : Texture;
+  
   //===========================================================================
   // Constructors & Destructor
   //===========================================================================
 
-  constructor(objectName : string, mesh: AbstractMesh)
+  constructor(createInfo: EntityCreateInfo)
   {
-    this.name = objectName;
-    this.mesh = mesh;
+    this.name = createInfo.name;
 
-    // Create drag behaviours
-    this.verticalDrag   = new PointerDragBehavior( {dragAxis: Vector3.Up() }); 
-    this.horizontalDrag = new PointerDragBehavior( {dragPlaneNormal: Vector3.Up() });
-  }
+    this.mesh     = createInfo.mesh;
 
-  //===========================================================================
-  // Member Functions
-  //===========================================================================
-
-  public CreateLabel(createInfo: UITextCreateInfo, scene: Scene)
-  {
-    this.textLabel = new UIText(createInfo, scene);
-  }
-
-  public SetDraggable(draggable: boolean): void
-  {
-    if (this.mesh == null)
+    // Attach the texture to the material and material to the mesh
+    if (createInfo.material != null)
     {
-      console.log(this.name + " is missing a Mesh! Unable to SetDraggable!");
-      return;
-    }
+      this.material = createInfo.material;
 
-    if (!draggable)
-    {
-      // Since vertical drag is the default, we remove that.
-      this.mesh.removeBehavior(this.verticalDrag);
-    }
-    else
-    {
-      this.verticalDrag.onDragStartObservable.add
-      (
-        (event)=>
-        { 
-          // We only allow vertical drag when the pointer is above the middle of the entity.
-          // Otherwise, we drag it horizontally along the XZ plane.
-          if (event.dragPlanePoint.y < this.mesh.position.y)
-          {
-            const dragID = this.verticalDrag.currentDraggingPointerId;
-            this.verticalDrag.detach();
-            this.horizontalDrag.attach(this.mesh);
-            this.horizontalDrag.startDrag(dragID);
-          }
-        }
-      );
+      if (createInfo.texture != null)
+      {
+        this.texture = createInfo.texture;
+        // Assign texture to material
+        (this.material as StandardMaterial).diffuseTexture = this.texture;
+      }
 
-      this.horizontalDrag.onDragEndObservable.add
-      (
-        ()=>
-        {
-          // Once horizontal dragging stops, we revert back to vertical drag by default.
-          this.horizontalDrag.detach();
-          this.verticalDrag.attach(this.mesh);
-        }
-      );
-
-      // Default is vertical drag.
-      this.mesh.addBehavior(this.verticalDrag);
+      this.mesh.material = this.material;
     }
   }
-
 }

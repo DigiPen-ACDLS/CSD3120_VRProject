@@ -8,6 +8,8 @@ import
 {
   Engine,
   Scene,
+  Vector3,
+  WebXRDefaultExperience,
   WebXRFeaturesManager,
   WebXRSessionManager
 } from "babylonjs";
@@ -37,15 +39,14 @@ export class XRScene
   // Data Members
   //===========================================================================
 
-  private  type            : XRMode;
+  private   type          : XRMode;
 
   // Babylon components
 
-  public   scene            : Scene;
-  public   featuresManager  : WebXRFeaturesManager;
-  public   sessionManager   : WebXRSessionManager;
+  public    scene         : Scene;
+  public    xrExperience  : WebXRDefaultExperience;
 
-  public   user             : XRUser;
+  public    user          : XRUser;
 
   //===========================================================================
   // Constructors & Destructor
@@ -60,14 +61,16 @@ export class XRScene
     this.scene.debugLayer.hide();
 
     this.scene.collisionsEnabled = true;
-
-    // Create an empty user.
-    this.user = new XRUser(this);
   }
 
   //===========================================================================
   // Public Member Functions
   //===========================================================================
+
+  public CreateDefaultUser(userPosition: Vector3): void
+  {
+    this.user = new XRUser(userPosition, this);
+  }
 
   /**
    * Call this function after the scene has been setup to create the VR experience.
@@ -96,13 +99,19 @@ export class XRScene
         } 
       });
     }
+  }
 
-    // Start in XR mode by default
-    xr.baseExperience.enterXRAsync(xrMode, "local-floor");
-
-    // Attach the features manager. Features can be enabled through another experience
-    this.featuresManager  = xr.baseExperience.featuresManager;
-    this.sessionManager   = xr.baseExperience.sessionManager;
+  public async ToggleXRMode(mode: boolean)
+  {
+    if (mode)
+    {
+      const xrMode: XRSessionMode = this.type === XRMode.VR ? "immersive-vr" : "immersive-ar";
+      await this.xrExperience.baseExperience.enterXRAsync(xrMode, "local-floor");
+    }
+    else
+    {
+      await this.xrExperience.baseExperience.exitXRAsync();
+    }
   }
 
 };

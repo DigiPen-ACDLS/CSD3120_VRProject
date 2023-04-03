@@ -7,7 +7,7 @@
 import { Engine } from "babylonjs";
 
 // Local Imports
-import { SolarSystemVRApp } from "./solar_system_app";
+import { SolarSystemVRApp } from "./solar_system/solar_system_app";
 import { SandboxVR } from "./sandbox";
 
 

@@ -1,10 +1,35 @@
+/**
+  @fileoverview   Sandbox Applicaiton for testing behaviour because babylon is so weird and imo
+                  a poor excuse for a full flegded engine. Should've used Unity.
+  @author         Diren D Bharwani, 2002216
+*/
 
-import * as BABYLON from "babylonjs";
+// Packages
+import 
+{ 
+  Engine, 
+  FreeCamera, 
+  HemisphericLight, 
+  MeshBuilder,
+  Scene,
+  UniversalCamera, 
+  Vector3, 
+  WebXRCamera 
+} from "babylonjs";
 
-import { WebXRApp, XRMode, XRScene } from "./app";
-import { TestTarget, TestSphere } from "./test";
-import { CameraConfig, CameraType } from "./objects";
-import { UniversalCamera, Vector3, WebXRCamera } from "babylonjs";
+// Local Imports
+import 
+{
+   WebXRApp, 
+   XRMode, 
+   XRScene 
+} from "../app";
+
+import 
+{ 
+  TestTarget, 
+  TestSphere 
+} from "../sandbox";
 
 export class SandboxVR extends WebXRApp
 {
@@ -15,7 +40,7 @@ export class SandboxVR extends WebXRApp
   // Constructors & Destructor
   //===========================================================================
 
-  constructor(engine: BABYLON.Engine, canvas: HTMLCanvasElement)
+  constructor(engine: Engine, canvas: HTMLCanvasElement)
   {
     // WebXRApp's ctor
     super(engine, canvas);
@@ -35,7 +60,7 @@ export class SandboxVR extends WebXRApp
 
     this.initUser();
 
-    var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), this.currentScene.scene);
+    var light = new HemisphericLight("Light", new Vector3(0, 1, 0), this.currentScene.scene);
     light.intensity = 0.7;
 
     await this.createFloor();
@@ -61,24 +86,24 @@ export class SandboxVR extends WebXRApp
 
   private initUser(): void
   {
-    const universalCamera = new UniversalCamera("Camera", new Vector3(0, 3, -5), this.currentScene.scene);
-    universalCamera.minZ  = 0.01;
-    universalCamera.speed = 0.3;
+    const camera = new FreeCamera("Camera", new Vector3(0, 3, -5), this.currentScene.scene);
+    camera.minZ  = 0.01;
+    camera.speed = 0.3;
   
-    universalCamera.attachControl(this.canvas, true);
+    camera.attachControl(this.canvas);
 
-    const xrCamera        = new WebXRCamera("XRCamera", this.currentScene.scene, this.currentScene.sessionManager);
-    xrCamera.setTransformationFromNonVRCamera(universalCamera);
-    xrCamera.attachControl(this.canvas, true);
+    // const xrCamera        = new WebXRCamera("XRCamera", this.currentScene.scene, this.currentScene.sessionManager);
+    // xrCamera.setTransformationFromNonVRCamera(universalCamera);
+    // xrCamera.attachControl(this.canvas, true);
 
-    this.currentScene.scene.activeCamera  = xrCamera;
-    this.currentScene.user.camera         = xrCamera;
+    this.currentScene.scene.activeCamera  = camera;
+    this.currentScene.user.camera         = camera;
   }
 
   private createFloor(): void
   {
-    const ground = BABYLON.MeshBuilder.CreateGround("Ground", {width:10, height:10}, this.currentScene.scene);
-    ground.position = new BABYLON.Vector3(0,0,0);
+    const ground = MeshBuilder.CreateGround("Ground", {width:10, height:10}, this.currentScene.scene);
+    ground.position = new Vector3(0,0,0);
   }
 
   private createSpheresAndTargets(): void
@@ -94,26 +119,26 @@ export class SandboxVR extends WebXRApp
     this.triggers.push(new TestTarget(this.spheres[2], this.currentScene.scene));
   
     // A
-    this.spheres[0].mesh.position   = new BABYLON.Vector3(0,1,0);
-    this.triggers[0].mesh.position  = new BABYLON.Vector3(0,0.5,-2);
+    this.spheres[0].mesh.position   = new Vector3(0,1,0);
+    this.triggers[0].mesh.position  = new Vector3(0,0.5,-2);
 
     // B
-    this.spheres[1].mesh.position   = new BABYLON.Vector3(-1,1,0);
-    this.triggers[1].mesh.position  = new BABYLON.Vector3(1,0.5,-2);
+    this.spheres[1].mesh.position   = new Vector3(-1,1,0);
+    this.triggers[1].mesh.position  = new Vector3(1,0.5,-2);
 
     // C
-    this.spheres[2].mesh.position = new BABYLON.Vector3(1,1,0);
-    this.triggers[2].mesh.position = new BABYLON.Vector3(-1,0.5,-2);
+    this.spheres[2].mesh.position = new Vector3(1,1,0);
+    this.triggers[2].mesh.position = new Vector3(-1,0.5,-2);
   }
 
   private createButton(): void
   {
-    const button = BABYLON.MeshBuilder.CreateCylinder("Button", {height:0.3, diameter:1}, this.currentScene.scene);
-    button.position = new BABYLON.Vector3(0,0.3,-4);
+    const button = MeshBuilder.CreateCylinder("Button", {height:0.3, diameter:1}, this.currentScene.scene);
+    button.position = new Vector3(0,0.3,-4);
 
     this.currentScene.scene.onPointerDown = (event, pickResult)=>
     {
-      if (pickResult.hit && pickResult.pickedMesh.name === "Button")
+      if (pickResult.hit && pickResult.pickedMesh && pickResult.pickedMesh.name === "Button")
       {
         var passChecks = true;
         for (const trigger of this.triggers)

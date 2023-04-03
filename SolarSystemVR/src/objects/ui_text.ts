@@ -70,9 +70,9 @@ export class UIText
   // Data Members
   //===========================================================================
 
-  plane     : Mesh;
-  texture   : AdvancedDynamicTexture;
-  textBlock : TextBlock;
+  public plane     : Mesh;
+  public texture   : AdvancedDynamicTexture;
+  public textBlock : TextBlock;
 
   //===========================================================================
   // Constructors & Destructor
