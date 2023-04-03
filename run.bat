@@ -10,8 +10,8 @@ call npm --v && (
   echo --------------------------------
 )
 
-if not exist node_modules\ ( call npm install )
 cd SolarSystemVR
+if not exist node_modules\ ( call npm install )
 
 : run
 echo Running SolarSystemVR...
