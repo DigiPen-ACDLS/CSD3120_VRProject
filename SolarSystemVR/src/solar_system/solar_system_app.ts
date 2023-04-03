@@ -15,6 +15,7 @@ import
   Mesh,
   MeshBuilder,
   PhotoDome,
+  Quaternion,
   UniversalCamera,
   Vector2,
   Vector3, 
@@ -78,6 +79,8 @@ export class SolarSystemVRApp extends WebXRApp
 
   private whiteboard  : UIText;
   private button      : AbstractMesh;
+
+  private camSpeed    : number;
 
   //===========================================================================
   // Constructors & Destructor
@@ -145,22 +148,57 @@ export class SolarSystemVRApp extends WebXRApp
   {
     this.currentScene.CreateDefaultUser(new Vector3(28, 32, -7), new Vector3(-113.35, 47.5, 0));
     (this.currentScene.user.camera as UniversalCamera).speed    = 1.0;
+    this.camSpeed = 1.0;
 
     this.currentScene.user.camera.attachControl(this.canvas, true);
     this.currentScene.scene.activeCamera = this.currentScene.user.camera;
-
-    this.currentScene.scene.registerBeforeRender
+    
+    this.currentScene.scene.onKeyboardObservable.add
     (
-      ()=>
+      (eventData)=>
       {
-        var xrCamera = this.currentScene.scene._activeCamera;
-        if (xrCamera instanceof WebXRCamera) 
+        const activeCam   = this.currentScene.scene.activeCamera;
+        const camPos      = this.currentScene.scene.activeCamera.position;
+
+        const forwardDir  = activeCam.getForwardRay(this.camSpeed).direction;
+        const rearDir     = new Vector3(-forwardDir.x, -forwardDir.y, -forwardDir.z);
+
+        const rightDir    = activeCam.upVector.cross(forwardDir);
+        const leftDir     = new Vector3(-rightDir.x, -rightDir.y, -rightDir.z);
+
+        const speedMultiplier = new Vector3();
+        speedMultiplier.setAll(this.camSpeed);
+
+        switch (eventData.event.key)
         {
-          xrCamera.position = new Vector3(28, 32, -7);
-          xrCamera.target   = new Vector3(-113.35, 47.5, 0);
+          case 'w':
+          case "W":
+          {
+            camPos.addInPlace(forwardDir.multiply(speedMultiplier))
+            break;
+          }
+          case 's':
+          case "S":
+          {
+            camPos.addInPlace(rearDir.multiply(speedMultiplier));
+            break;
+          }
+          case 'a':
+          case "A":
+          {
+            camPos.addInPlace(leftDir.multiply(speedMultiplier));
+            break;
+          }
+          case 'd':
+          case "D":
+          {
+            camPos.addInPlace(rightDir.multiply(speedMultiplier));
+            break;
+          }
         }
-      }
-    );
+      } 
+    )
+    
   }
 
   private async loadModelsAndCreateEntities(): Promise<void>
@@ -553,7 +591,7 @@ export class SolarSystemVRApp extends WebXRApp
     this.button.dispose();
 
     // Change the camera's speed
-    (this.currentScene.user.camera as UniversalCamera).speed  = 10.0;
+    this.camSpeed = 10.0;
   }
 
   private AnimateLab() : void 
