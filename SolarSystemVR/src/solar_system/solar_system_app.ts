@@ -109,6 +109,7 @@ export class SolarSystemVRApp extends WebXRApp
     await this.setPlatforms();
     await this.setPlanets();
     await this.CreateRoof();
+    await this.createButton();
    }
     
 
@@ -479,5 +480,30 @@ export class SolarSystemVRApp extends WebXRApp
     mesh.animations.push(planetFloatAnimation);
 
     this.currentScene.scene.beginAnimation(mesh, 0, 120, true);
+  }
+
+  private createButton(): void
+  {
+    const button = MeshBuilder.CreateCylinder("Button", {height:0.3, diameter:1}, this.currentScene.scene);
+    button.position = new Vector3(-2.75, 18, -6.0);
+
+    this.currentScene.scene.onPointerDown = (event, pickResult)=>
+    {
+      if (pickResult.hit && pickResult.pickedMesh && pickResult.pickedMesh.name === "Button")
+      {
+        var passChecks = true;
+        for (const target of this.targets)
+        {
+          console.log(target.target + ": " + (target.match ? "Match" : "No Match"));
+          if (target.match == false)
+          {
+            passChecks = false;
+            break;
+          }
+        }
+
+        console.log(passChecks ? "Pass!" : "Fail");
+      }
+    };
   }
 };
