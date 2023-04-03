@@ -62,7 +62,7 @@ export class XRScene
   constructor(mode: XRMode, engine: Engine)
   {
     this.type = mode;
-
+    
     // Hide the inspector by default.
     this.scene = new Scene(engine);
     this.scene.debugLayer.hide();
