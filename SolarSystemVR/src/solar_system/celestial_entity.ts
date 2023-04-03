@@ -286,4 +286,43 @@ export class CelestialEntity extends Entity
 
     xrScene.scene.beginAnimation(this.mesh, 0, 120, true);
   }
+
+  public MoveToSpaceAnimation(finalPosition: Vector3, scalingFactor: number, xrScene: XRScene)
+  {
+    const planetScaling = new Animation
+    (
+      this.name + "_scalingAnimation", 
+      "scaling",
+      60,
+      Animation.ANIMATIONTYPE_VECTOR3,
+      Animation.ANIMATIONLOOPMODE_CONSTANT
+    );
+
+    const planetMove = new Animation
+    (
+      this.name + "_positionAnimation", 
+      "position",
+      60,
+      Animation.ANIMATIONTYPE_VECTOR3,
+      Animation.ANIMATIONLOOPMODE_CONSTANT
+    );
+
+    const keyframes = [
+      {frame: 0, value    : this.mesh.scaling },
+      {frame: 360, value  : this.mesh.scaling.multiply(new Vector3(scalingFactor, scalingFactor, scalingFactor))}
+    ]
+
+    const posKeyFrames = [
+      {frame: 0, value    : this.mesh.position  },
+      {frame: 360, value  : finalPosition       }
+    ]
+
+    planetScaling.setKeys(keyframes);
+    planetMove.setKeys(posKeyFrames);
+    this.mesh.animations = [];
+    this.mesh.animations.push(planetScaling);
+    this.mesh.animations.push(planetMove);
+
+    xrScene.scene.beginAnimation(this.mesh, 0, 360, false);
+  }
 };

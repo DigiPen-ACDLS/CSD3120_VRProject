@@ -75,6 +75,9 @@ export class SolarSystemVRApp extends WebXRApp
 
   private planetInfo  : PlanetInfo;
 
+  private whiteboard  : UIText;
+  private button      : AbstractMesh;
+
   //===========================================================================
   // Constructors & Destructor
   //===========================================================================
@@ -307,6 +310,18 @@ export class SolarSystemVRApp extends WebXRApp
       new Vector3( 700    , 700   , 0       ),    // moon   
     ];
 
+    let correctPositions = [
+      new Vector3(-12.2, 19.5, -6.0 ),    // mercury
+      new Vector3(-12.2, 19.5, 0.0  ),    // venus  
+      new Vector3(-12.2, 19.5, 6.0  ),    // earth  
+      new Vector3(-12.2, 19.5, 12.0 ),    // mars   
+      new Vector3(-12.2, 20.2, 18.0 ),    // jupiter
+      new Vector3(-12.2, 20.2, 24.0 ),    // saturn 
+      new Vector3(-12.2, 20.2, 30.0 ),    // uranus 
+      new Vector3(-12.2, 19.9, 36.0 ),    // neptune
+      new Vector3( 700 , 700 , 0    ),    // moon   
+    ]
+
     let planetScales = [
       1.2   , // mercury
       0.4   , // venus  
@@ -344,10 +359,8 @@ export class SolarSystemVRApp extends WebXRApp
     // Set each celestial transforms
     for (let i = 0; i < 9; ++i)
     {
-      celestials[i].mesh.position = initialPlanetPositions[i];
+      celestials[i].mesh.position = correctPositions[i];
       celestials[i].mesh.scaling.setAll(planetScales[i]);
-
-      // celestials[i].SetupAnimations();
     }
 
     // Create lebals for each planet & start their animations ( we omit the moon ) 
@@ -423,7 +436,7 @@ export class SolarSystemVRApp extends WebXRApp
 
   private createWhiteboard(): void
   {
-    const whiteboardInfo    = new UITextCreateInfo("Whiteboard");
+    const whiteboardInfo            = new UITextCreateInfo("Whiteboard");
     whiteboardInfo.fontSize         = 256;
     whiteboardInfo.planeDimensions  = new Vector2(64, 32);
 
@@ -431,22 +444,24 @@ export class SolarSystemVRApp extends WebXRApp
                           "Find the planets and put them on the platforms on the table in the correct order. Press the white button once you are done. \n\n" +
                           "Use the distance from the sun as a hint!";
     
-    const whiteboard = new UIText(whiteboardInfo, this.currentScene.scene);
-    whiteboard.textBlock.textVerticalAlignment  = Control.VERTICAL_ALIGNMENT_TOP;
-    whiteboard.textBlock.alpha                  = 1.0;
-    whiteboard.textBlock.paddingTop             = "20px";
-    whiteboard.textBlock.paddingBottom          = "20px";
-    whiteboard.textBlock.paddingLeft            = "20px";
-    whiteboard.textBlock.paddingRight           = "20px";
+    this.whiteboard = new UIText(whiteboardInfo, this.currentScene.scene);
+    this.whiteboard.textBlock.textVerticalAlignment  = Control.VERTICAL_ALIGNMENT_TOP;
+    this.whiteboard.textBlock.alpha                  = 1.0;
+    this.whiteboard.textBlock.paddingTop             = "20px";
+    this.whiteboard.textBlock.paddingBottom          = "20px";
+    this.whiteboard.textBlock.paddingLeft            = "20px";
+    this.whiteboard.textBlock.paddingRight           = "20px";
 
-    whiteboard.plane.position = new Vector3(-113.35, 47.5, 0);
-    whiteboard.plane.rotation = new Vector3(0, -Math.PI / 2, 0);
+    this.whiteboard.plane.position = new Vector3(-113.35, 47.5, 0);
+    this.whiteboard.plane.rotation = new Vector3(0, -Math.PI / 2, 0);
+
+    this.entities.get("lab").mesh.addChild(this.whiteboard.plane);
   }
 
   private createButton(): void
   {
-    const button = MeshBuilder.CreateCylinder("Button", {height:0.3, diameter:1}, this.currentScene.scene);
-    button.position = new Vector3(-2.75, 18, -6.0);
+    this.button = MeshBuilder.CreateCylinder("Button", {height:0.3, diameter:1}, this.currentScene.scene);
+    (this.button as Mesh).position = new Vector3(-2.75, 18, -6.0);
 
     this.currentScene.scene.onPointerDown = (event, pickResult)=>
     {
@@ -463,8 +478,127 @@ export class SolarSystemVRApp extends WebXRApp
           }
         }
 
-        console.log(passChecks ? "Pass!" : "Fail");
+        if (passChecks)
+        {
+          this.transition();
+        }
       }
     };
+  }
+
+  private async transition(): Promise<void>
+  {
+    let CELESTIAL_NAMES = [
+        "Mercury"   , // 0
+        "Venus"     , // 1
+        "Earth"     , // 2
+        "Mars"      , // 3
+        "Jupiter"   , // 4
+        "Saturn"    , // 5
+        "Uranus"    , // 6
+        "Neptune"   , // 7
+    ];
+
+    (this.entities.get(CELESTIAL_NAMES[0]) as CelestialEntity).MoveToSpaceAnimation
+    (
+      new Vector3(-300, 0, 0),
+      10,
+      this.currentScene
+    );
+
+    // Delete target to stop forced positions
+    for (const target of this.targets)
+    {
+      target.mesh.dispose();
+    }
+
+    // Cue animation
+    this.AnimateLab();
+    for (let i = 0; i < 8; ++i)
+    {
+      // Delete platforms
+      this.entities.get("platform" + i.toString()).mesh.dispose();
+    }
+
+    // Dispose of button and whiteboard
+    this.whiteboard.textBlock.dispose();
+    this.button.dispose();
+
+    // Change the camera's speed
+    (this.currentScene.user.camera as UniversalCamera).speed  = 2.0;
+
+    // TODO: Set the new text for each planet
+  }
+
+  private AnimateLab() : void 
+  {
+    const plane = this.entities.get('roof').mesh;
+    const lab = this.entities.get('lab').mesh;
+    const roofAnimation = new Animation('rotationAnima', 
+    'rotation', 
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+    const roofMove = new Animation('positionAnima',
+    'position', 
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CONSTANT
+    )
+
+    const labAnimation = new Animation('rotationAnima', 
+    'rotation', 
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+    const labMove = new Animation('positionAnima',
+    'position',
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CONSTANT
+    )
+
+    const keyframes = [
+        {frame: 0, value : new Vector3(Math.PI / 2, 0, 0)},
+        {frame: 960, value : new Vector3(Math.PI / 2, 0, 2*Math.PI)}
+    ]
+
+    const keyposframes = [
+        {frame: 0, value : plane.position},
+        {frame: 960, value : plane.position.add(new Vector3(0, 150, 0))}
+    ]
+
+    const keylabframes = [
+      {frame: 0, value : lab.rotation},
+      {frame: 960, value : new Vector3(0, -2*Math.PI, 0)}
+  ]
+
+    const keyposlabframes = [
+      {frame: 0, value : plane.position},
+      {frame: 960, value : plane.position.subtract(new Vector3(0, 500, 0))}
+    ]
+    
+
+    roofAnimation.setKeys(keyframes);
+    roofMove.setKeys(keyposframes);
+    labAnimation.setKeys(keylabframes);
+    labMove.setKeys(keyposlabframes);
+    plane.animations = [];
+    plane.animations.push(roofAnimation);
+    plane.animations.push(roofMove);
+    lab.animations = [];
+    lab.animations.push(labAnimation);
+    lab.animations.push(labMove);
+    
+    this.currentScene.scene.beginAnimation(plane, 0, 960, false, 1, () =>{
+      plane.dispose();
+      this.entities.delete('roof');
+    });
+    this.currentScene.scene.beginAnimation(lab, 0, 960, false, 1, ()=>{
+      lab.dispose();
+      this.entities.delete('lab');
+    });
   }
 };
