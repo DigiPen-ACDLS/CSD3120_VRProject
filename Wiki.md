@@ -74,9 +74,7 @@ for the users by optimizing the rendering pipeline or by using different applica
 familiar with such as Unity.
 
 # link
-Link to the folder that has the individual responses 
-//git hub
-
+[Link to the folder that has the individual responses](https://github.com/DigiPen-ACDLS/CSD3120_VRProject/tree/master/User%20Evaluation%20Responses)
 
 
 
