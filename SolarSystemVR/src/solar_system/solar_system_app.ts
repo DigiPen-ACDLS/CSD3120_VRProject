@@ -36,6 +36,7 @@ import
 {
   Entity,
   EntityCreateInfo,
+  UIText,
   UITextCreateInfo
 } from "../objects";
 
@@ -43,6 +44,7 @@ import
 {
   CelestialEntity,
   CoasterEntity,
+  PlanetInfo,
   TargetEntity
 } from "../solar_system";
 
@@ -51,7 +53,7 @@ import
   BillboardMode 
 } from "../utilities";
 
-import { TextWrapper, TextWrapping } from "babylonjs-gui";
+import { Control, TextWrapper, TextWrapping } from "babylonjs-gui";
 import { meshFragmentDeclaration } from "babylonjs/Shaders/ShadersInclude/meshFragmentDeclaration";
 
 //=============================================================================
@@ -71,6 +73,8 @@ export class SolarSystemVRApp extends WebXRApp
   private entities    : Map<string, Entity>;
   private targets     : TargetEntity[];
 
+  private planetInfo  : PlanetInfo;
+
   //===========================================================================
   // Constructors & Destructor
   //===========================================================================
@@ -82,6 +86,8 @@ export class SolarSystemVRApp extends WebXRApp
 
     this.entities = new Map<string, Entity>();
     this.targets  = [];
+
+    this.planetInfo = new PlanetInfo();
   }
 
   //===========================================================================
@@ -91,6 +97,7 @@ export class SolarSystemVRApp extends WebXRApp
   public async Init(): Promise<void>
   {
     this.currentScene = new XRScene(XRMode.VR, this.engine);
+    this.currentScene.scene.autoClear = false;
 
     await super.Init();
 
@@ -108,8 +115,9 @@ export class SolarSystemVRApp extends WebXRApp
     await this.loadModelsAndCreateEntities();
     await this.setPlatforms();
     await this.setPlanets();
-    await this.CreateRoof();
+    await this.createRoof();
     await this.createButton();
+    await this.createWhiteboard();
    }
     
 
@@ -129,7 +137,7 @@ export class SolarSystemVRApp extends WebXRApp
 
   private initUser(): void
   {
-    this.currentScene.CreateDefaultUser(new Vector3(28, 32, -7), new Vector3(-12.2, 19.5, -6));
+    this.currentScene.CreateDefaultUser(new Vector3(28, 32, -7), new Vector3(-113.35, 47.5, 0));
     (this.currentScene.user.camera as UniversalCamera).speed    = 1.0;
 
     this.currentScene.user.camera.attachControl(this.canvas, true);
@@ -353,46 +361,11 @@ export class SolarSystemVRApp extends WebXRApp
       labelInfo.planePosition   = labelPositions[i];
       labelInfo.billboardmode   = BillboardMode.ALL;
 
-      celestials[i].CreateLabel(names[i], this.currentScene);
+      celestials[i].CreateLabel(this.planetInfo.planetsInfo1[i], this.currentScene);
     }
   }
 
-  private AnimateToSpace(mesh : AbstractMesh, position : Vector3, scale : number)
-  {
-    const planetScaling = new Animation("scalingAnimation", 
-    "scaling",
-    60,
-    Animation.ANIMATIONTYPE_VECTOR3,
-    Animation.ANIMATIONLOOPMODE_CONSTANT
-    );
-
-    const planetMove = new Animation("positionAnimation", 
-    "position",
-    60,
-    Animation.ANIMATIONTYPE_VECTOR3,
-    Animation.ANIMATIONLOOPMODE_CONSTANT
-    );
-
-    const keyframes = [
-      {frame: 0, value : mesh.scaling},
-      {frame: 360, value : mesh.scaling.multiply(new Vector3(scale, scale, scale))}
-    ]
-
-    const posKeyFrames = [
-      {frame: 0, value : mesh.position},
-      {frame: 360, value : position}
-    ]
-
-    planetScaling.setKeys(keyframes);
-    planetMove.setKeys(posKeyFrames);
-    mesh.animations = [];
-    mesh.animations.push(planetScaling);
-    mesh.animations.push(planetMove);
-
-    this.currentScene.scene.beginAnimation(mesh, 0, 360, false);
-  }
-
-  private async CreateRoof(): Promise<void>
+  private async createRoof(): Promise<void>
   {
     var plane = MeshBuilder.CreatePlane
     (
@@ -448,39 +421,26 @@ export class SolarSystemVRApp extends WebXRApp
     plane.animations.push(roofMove);
   }
 
-  private startPlanetAnimations(mesh : AbstractMesh) : void
+  private createWhiteboard(): void
   {
-    // const planetRotAnimation = new Animation('rotationAnima', 
-    // 'rotation', 
-    // 60,
-    // Animation.ANIMATIONTYPE_VECTOR3,
-    // Animation.ANIMATIONLOOPMODE_CYCLE);
+    const whiteboardInfo    = new UITextCreateInfo("Whiteboard");
+    whiteboardInfo.fontSize         = 256;
+    whiteboardInfo.planeDimensions  = new Vector2(64, 32);
 
-    // const planetFloatAnimation = new Animation('positionAnima',
-    // 'position',
-    // 60,
-    // Animation.ANIMATIONTYPE_VECTOR3,
-    // Animation.ANIMATIONLOOPMODE_CYCLE
-    // )
+    whiteboardInfo.text = "\nWelcome to the Solar System Explorer! \n\n" +
+                          "Find the planets and put them on the platforms on the table in the correct order. Press the white button once you are done. \n\n" +
+                          "Use the distance from the sun as a hint!";
+    
+    const whiteboard = new UIText(whiteboardInfo, this.currentScene.scene);
+    whiteboard.textBlock.textVerticalAlignment  = Control.VERTICAL_ALIGNMENT_TOP;
+    whiteboard.textBlock.alpha                  = 1.0;
+    whiteboard.textBlock.paddingTop             = "20px";
+    whiteboard.textBlock.paddingBottom          = "20px";
+    whiteboard.textBlock.paddingLeft            = "20px";
+    whiteboard.textBlock.paddingRight           = "20px";
 
-    // const keyframes = [
-    //     {frame: 0, value : mesh.rotation},
-    //     {frame: 120, value : mesh.rotation.add(new Vector3(0, Math.PI * 2, 0))}
-    // ]
-
-    // const keyposframes = [
-    //     {frame: 0, value : mesh.position},
-    //     {frame: 60, value : mesh.position.add(new Vector3(0, 0.2, 0))},
-    //     {frame: 120, value : mesh.position}
-    // ]
-
-    // planetRotAnimation.setKeys(keyframes);
-    // planetFloatAnimation.setKeys(keyposframes);
-    // mesh.animations = [];
-    // mesh.animations.push(planetRotAnimation);
-    // mesh.animations.push(planetFloatAnimation);
-
-    // // this.currentScene.scene.beginAnimation(mesh, 0, 120, true);
+    whiteboard.plane.position = new Vector3(-113.35, 47.5, 0);
+    whiteboard.plane.rotation = new Vector3(0, -Math.PI / 2, 0);
   }
 
   private createButton(): void

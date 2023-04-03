@@ -5,5 +5,6 @@
 
 export * from "./celestial_entity";
 export * from "./coaster_entity";
+export * from "./planets_info";
 export * from "./solar_system_app";
 export * from "./target_entity";

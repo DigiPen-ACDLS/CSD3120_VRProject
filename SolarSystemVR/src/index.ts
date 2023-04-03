@@ -16,7 +16,16 @@ async function main(): Promise<void>
   // Create a canvas to render to and a babylonjs engine.
 
   const renderCanvas    : HTMLCanvasElement = document.getElementById("renderCanvas") as HTMLCanvasElement;
-  const babylonEngine   : Engine            = new Engine(renderCanvas, true, { deterministicLockstep: true, lockstepMaxSteps: 4 } );
+  const babylonEngine   : Engine            = new Engine
+  (
+    renderCanvas, 
+    true, 
+    { 
+      preserveDrawingBuffer : true, 
+      stencil               : true 
+    }, 
+    true
+  );
 
   solarSystem(babylonEngine, renderCanvas);
   // sandbox(babylonEngine, renderCanvas);

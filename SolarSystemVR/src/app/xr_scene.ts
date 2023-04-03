@@ -91,9 +91,12 @@ export class XRScene
   {
     const xrMode: XRSessionMode = this.type === XRMode.VR ? "immersive-vr" : "immersive-ar";
 
-    const xr = await this.scene.createDefaultXRExperienceAsync({
-      uiOptions: { sessionMode: xrMode }
-    });
+    const xr = await this.scene.createDefaultXRExperienceAsync
+    (
+      {
+        uiOptions   : { sessionMode: xrMode },
+      }
+    );
     
     (window as any).xr = xr;
 

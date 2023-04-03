@@ -63,7 +63,7 @@ export class CelestialEntity extends Entity
   private   rotateAnimation : Animation;
   private   floatAnimation  : Animation;
 
-  private   label           : TextBlock;
+  public    label           : TextBlock;
   private   textRect        : Rectangle;
   public    sphereCollider  : AbstractMesh;
 
@@ -105,8 +105,8 @@ export class CelestialEntity extends Entity
     this.textRect.linkOffsetY       = "-100px";
     this.textRect.transformCenterX  = 0;
     this.textRect.transformCenterY  = 1;  
-    this.textRect.background        = "grey";
-    this.textRect.alpha             = 0.7;
+    this.textRect.background        = "White";
+    this.textRect.alpha             = 0.9;
     this.textRect.scaleX            = 0;
     this.textRect.scaleY            = 0;
     this.textRect.cornerRadius      = 30
@@ -114,12 +114,11 @@ export class CelestialEntity extends Entity
 
     this.label = new TextBlock(this.name + "_label");
     this.label.text                   = text;
-    this.label.color                  = "White";
+    this.label.color                  = "Black";
     this.label.fontSize               = 14;
     this.label.textWrapping           = true;
     this.label.textVerticalAlignment  = Control.VERTICAL_ALIGNMENT_TOP;
-    // this.label.                    = '#006994'
-    this.label.alpha                  = 0.5;
+    this.label.alpha                  = 1.0;
     this.label.paddingTop             = "20px";
     this.label.paddingBottom          = "20px";
     this.label.paddingLeft            = "20px";
@@ -194,8 +193,9 @@ export class CelestialEntity extends Entity
       // HACK: Make a transparent material for the sphere
       const sphereMaterial = new StandardMaterial(this.name + "_sphereColliderMat", xrScene.scene);
       sphereMaterial.alpha = 0.0;
-
+      
       this.sphereCollider.material = sphereMaterial;
+      sphereMaterial.freeze();
 
       this.mesh.addChild(this.sphereCollider);
     }
