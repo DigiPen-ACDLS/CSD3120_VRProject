@@ -17,7 +17,8 @@ import
   PhotoDome,
   UniversalCamera,
   Vector2,
-  Vector3 
+  Vector3, 
+  WebXRCamera
 } from "babylonjs";
 
 import 'babylonjs-loaders';
@@ -104,6 +105,8 @@ export class SolarSystemVRApp extends WebXRApp
 
     await super.Init();
 
+    this.currentScene.InitXR(true);
+
     // //Enable Gizmo
     // const gizmoManager = new GizmoManager(this.currentScene.scene);
     // gizmoManager.positionGizmoEnabled = true;
@@ -145,6 +148,19 @@ export class SolarSystemVRApp extends WebXRApp
 
     this.currentScene.user.camera.attachControl(this.canvas, true);
     this.currentScene.scene.activeCamera = this.currentScene.user.camera;
+
+    this.currentScene.scene.registerBeforeRender
+    (
+      ()=>
+      {
+        var xrCamera = this.currentScene.scene._activeCamera;
+        if (xrCamera instanceof WebXRCamera) 
+        {
+          xrCamera.position = new Vector3(28, 32, -7);
+          xrCamera.target   = new Vector3(-113.35, 47.5, 0);
+        }
+      }
+    );
   }
 
   private async loadModelsAndCreateEntities(): Promise<void>
