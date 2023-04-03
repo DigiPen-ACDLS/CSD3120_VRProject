@@ -522,6 +522,9 @@ export class SolarSystemVRApp extends WebXRApp
       this.currentScene
     );
 
+    (this.entities.get(CELESTIAL_NAMES[0]) as CelestialEntity).textRect.height  = "400px";
+    (this.entities.get(CELESTIAL_NAMES[0]) as CelestialEntity).label.text       = this.planetInfo.planetsInfo2[0];
+
     // Delete target to stop forced positions
     for (const target of this.targets)
     {

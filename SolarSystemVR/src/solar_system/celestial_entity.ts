@@ -64,7 +64,7 @@ export class CelestialEntity extends Entity
   private   floatAnimation  : Animation;
 
   public    label           : TextBlock;
-  private   textRect        : Rectangle;
+  public    textRect        : Rectangle;
   public    sphereCollider  : AbstractMesh;
 
   private   verticalDrag    : PointerDragBehavior;
@@ -99,8 +99,8 @@ export class CelestialEntity extends Entity
     this.textRect = new Rectangle(this.name + "_textRect");
     xrScene.fullscreenUI.addControl(this.textRect);
     this.textRect.width             = "300px";
-    this.textRect.height            ="200px";
-    this.textRect.thickness         = 2;        
+    this.textRect.height            = "200px";
+    this.textRect.thickness         = 2;
     this.textRect.linkOffsetX       = "150px";
     this.textRect.linkOffsetY       = "-100px";
     this.textRect.transformCenterX  = 0;
