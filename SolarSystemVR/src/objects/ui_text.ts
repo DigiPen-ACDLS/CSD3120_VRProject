@@ -45,6 +45,7 @@ export class UITextCreateInfo
   public  planeDimensions : Vector2;
   public  planePosition   : Vector3;
   public  planeRotation   : Vector3; // Euler Angles Y->X->Z
+  public  billboardmode   : BillboardMode;
 
   //===========================================================================
   // Constructors & Destructor
@@ -58,6 +59,7 @@ export class UITextCreateInfo
     this.uiTextName       = name;
 
     this.planeDimensions  = Vector2.One();
+    this.billboardmode    = BillboardMode.None;
   }
 };
 
@@ -98,7 +100,7 @@ export class UIText
     // Set Transform Info
     this.plane.position       = createInfo.planePosition;
 
-    this.plane.billboardMode  = BillboardMode.None; 
+    this.plane.billboardMode  = createInfo.billboardmode; 
 
     // Create texture for rendering the text to
     const TEXTURE_DIMENSIONS = createInfo.planeDimensions.scale(100);

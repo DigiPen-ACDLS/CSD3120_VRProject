@@ -18,8 +18,8 @@ async function main(): Promise<void>
   const renderCanvas    : HTMLCanvasElement = document.getElementById("renderCanvas") as HTMLCanvasElement;
   const babylonEngine   : Engine            = new Engine(renderCanvas, true, { deterministicLockstep: true, lockstepMaxSteps: 4 } );
 
-  // solarSystem(babylonEngine, renderCanvas);
-  sandbox(babylonEngine, renderCanvas);
+  solarSystem(babylonEngine, renderCanvas);
+  //sandbox(babylonEngine, renderCanvas);
 }
 
 async function solarSystem(engine: Engine, canvas: HTMLCanvasElement)
