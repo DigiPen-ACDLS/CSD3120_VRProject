@@ -528,23 +528,11 @@ export class SolarSystemVRApp extends WebXRApp
 
     for(let i = 0; i < 8; ++i)
     {
-        (this.entities.get(CELESTIAL_NAMES[i]) as CelestialEntity).MoveToSpaceAnimation
-        (
-            CELESTIAL_POSITIONS[i],
-            100,
-            this.currentScene
-        );
+      (this.entities.get(CELESTIAL_NAMES[i]) as CelestialEntity).MoveToSpaceAnimation(CELESTIAL_POSITIONS[i], 100, this.currentScene);
+      (this.entities.get(CELESTIAL_NAMES[i]) as CelestialEntity).SetDraggable(false);
+      (this.entities.get(CELESTIAL_NAMES[i]) as CelestialEntity).textRect.height  = "400px";
+      (this.entities.get(CELESTIAL_NAMES[i]) as CelestialEntity).label.text       = this.planetInfo.planetsInfo2[i];
     }
-
-    // (this.entities.get(CELESTIAL_NAMES[0]) as CelestialEntity).MoveToSpaceAnimation
-    // (
-    //   new Vector3(-300, 0, 0),
-    //   10,
-    //   this.currentScene
-    // );
-
-    (this.entities.get(CELESTIAL_NAMES[0]) as CelestialEntity).textRect.height  = "400px";
-    (this.entities.get(CELESTIAL_NAMES[0]) as CelestialEntity).label.text       = this.planetInfo.planetsInfo2[0];
 
     // Delete target to stop forced positions
     for (const target of this.targets)
@@ -565,9 +553,7 @@ export class SolarSystemVRApp extends WebXRApp
     this.button.dispose();
 
     // Change the camera's speed
-    (this.currentScene.user.camera as UniversalCamera).speed  = 2.0;
-
-    // TODO: Set the new text for each planet
+    (this.currentScene.user.camera as UniversalCamera).speed  = 10.0;
   }
 
   private AnimateLab() : void 

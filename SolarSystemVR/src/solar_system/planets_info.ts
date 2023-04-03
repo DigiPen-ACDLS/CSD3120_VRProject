@@ -88,7 +88,7 @@ export class PlanetInfo
 
     this.planetsInfo2.push
     (
-      "Jupiter" + "Size: 142,984 km \n" + "Distance from Sun: 778,600,000 km (5.2 AU)\n\n" +
+      "Jupiter\n\n" + "Size: 142,984 km \n" + "Distance from Sun: 778,600,000 km (5.2 AU)\n\n" +
       "Fifth in line from the Sun, Jupiter is, by far, the largest planet in the solar system – more than twice as massive as all the other planets combined.\n\n" +
       "Jupiter's familiar stripes and swirls are actually cold, windy clouds of ammonia and water, floating in an atmosphere of hydrogen and helium. Jupiter’s iconic Great Red Spot is a giant storm bigger than Earth that has raged for hundreds of years."
     );
@@ -103,7 +103,7 @@ export class PlanetInfo
 
     this.planetsInfo2.push
     (
-      "Saturn" + "Size: 120,536 km \n" + "Distance from Sun: 1,433,500,000 km (9.54 AU)\n\n" +
+      "Saturn\n\n" + "Size: 120,536 km \n" + "Distance from Sun: 1,433,500,000 km (9.54 AU)\n\n" +
       "Saturn is the sixth planet from the Sun and the second-largest planet in our solar system.\n\n" +
       "Adorned with thousands of beautiful ringlets, Saturn is unique among the planets."
     );
@@ -118,7 +118,7 @@ export class PlanetInfo
 
     this.planetsInfo2.push
     (
-      "Uranus" + "Size: 51,118 km \n" + "Distance from Sun: 2,872,500,000 km (19.2AU)\n\n" +
+      "Uranus\n\n" + "Size: 51,118 km \n" + "Distance from Sun: 2,872,500,000 km (19.2AU)\n\n" +
       "Uranus is the seventh planet from the Sun, and has the third-largest diameter in our solar system. It was the first planet found with the aid of a telescope."
     );
   }
@@ -132,7 +132,7 @@ export class PlanetInfo
 
     this.planetsInfo2.push
     (
-      "Neptune" + "Size: 49,528 km \n" + "Distance from Sun: 4,495,100,000 km (30.06 AU)\n\n" +
+      "Neptune\n\n" + "Size: 49,528 km \n" + "Distance from Sun: 4,495,100,000 km (30.06 AU)\n\n" +
       "Dark, cold, and whipped by supersonic winds, ice giant Neptune is the eighth and most distant planet in our solar system.\n\n" +
       "More than 30 times as far from the Sun as Earth, Neptune is the only planet in our solar system not visible to the naked eye and the first predicted by mathematics before its discovery."
     );
