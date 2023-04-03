@@ -1,6 +1,6 @@
 /**
   @fileoverview   Implementation of a celestial entity for the solar system app.
-  @author         Leonard Lee, 369369369
+  @author         Diren D Bharwani, 2002216
 */
 
 // Packages
@@ -72,7 +72,7 @@ export class CelestialEntity extends Entity
   // Member Functions
   //===========================================================================
 
-  public CreateLabel(createInfo: UITextCreateInfo, xrScene: XRScene, state: LabelState)
+  public CreateLabel(createInfo: UITextCreateInfo, xrScene: XRScene)
   {
     this.textLabel = new UIText(createInfo, xrScene.scene);
 
@@ -80,6 +80,22 @@ export class CelestialEntity extends Entity
     {
       this.mesh.addChild(this.textLabel.plane);
     }
+
+    this.textLabel.plane.position = createInfo.planePosition;
+    this.textLabel.plane.rotation = createInfo.planeRotation;
+
+    // const uiCreateInfo              = new UITextCreateInfo(name);
+    // uiCreateInfo.fontSize           = options.fontSize || 32;
+    // uiCreateInfo.planeDimensions    = options.planeDim || new Vector2(4.5, 2.5);
+    // uiCreateInfo.planePosition      = new Vector3(0, 0, 0);
+    // uiCreateInfo.planeRotation      = new Vector3(0, 0, 0);
+    // uiCreateInfo.billboardmode      = options.billboard || BillboardMode.None;
+    // uiCreateInfo.text               = "Hello World";
+    
+    // this.textLabel = new UIText(uiCreateInfo, scene);
+    // this.mesh.addChild(this.textLabel.plane);
+    // this.textLabel.plane.position = options.position || new Vector3(0, 0, 0);
+    // this.textLabel.plane.rotation = options.rotation || new Vector3(0, 0, 0);
   }
 
   public SetLabelState(state: LabelState)
@@ -131,9 +147,6 @@ export class CelestialEntity extends Entity
         break;
       }
     }
-
-
-    
   }
 
   public SetDraggable(draggable: boolean): void

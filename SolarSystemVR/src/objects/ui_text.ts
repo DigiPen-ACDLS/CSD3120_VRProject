@@ -57,6 +57,10 @@ export class UITextCreateInfo
     this.fontSize         = 32;
 
     this.uiTextName       = name;
+    this.text             = "";
+
+    this.planePosition    = Vector3.Zero();
+    this.planeRotation    = Vector3.Zero();
 
     this.planeDimensions  = Vector2.One();
     this.billboardmode    = BillboardMode.None;
@@ -98,8 +102,6 @@ export class UIText
     );
 
     // Set Transform Info
-    this.plane.position       = createInfo.planePosition;
-
     this.plane.billboardMode  = createInfo.billboardmode; 
 
     // Create texture for rendering the text to
@@ -112,8 +114,9 @@ export class UIText
       createInfo.captureMove   // Whether to capture move events
     );
 
-    this.textBlock = new TextBlock(TEXT_NAME, createInfo.text);
-    this.textBlock.fontSize = createInfo.fontSize;
+    this.textBlock              = new TextBlock(TEXT_NAME, createInfo.text);
+    this.textBlock.fontSize     = createInfo.fontSize;
+    this.textBlock.textWrapping = true;
     
     // Set Default colours
     this.texture.background = "white";

@@ -4,4 +4,5 @@
 */
 
 export * from "./celestial_entity";
+export * from "./coaster_entity";
 export * from "./solar_system_app";
