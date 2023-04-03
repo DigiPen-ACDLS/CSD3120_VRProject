@@ -288,7 +288,7 @@ export class SolarSystemVRApp extends WebXRApp
     ];
 
     let planetPositions = [
-      new Vector3(-12.2, 19.5, -6.0 ),    // mercury
+      new Vector3(-6.2, 19.5, -6.0 ),    // mercury
       new Vector3(-12.2, 19.5, 0.0  ),    // venus  
       new Vector3(-12.2, 19.5, 6.0  ),    // earth  
       new Vector3(-12.2, 19.5, 12.0 ),    // mars   
@@ -338,6 +338,8 @@ export class SolarSystemVRApp extends WebXRApp
     {
       celestials[i].mesh.position = planetPositions[i];
       celestials[i].mesh.scaling.setAll(planetScales[i]);
+
+      // celestials[i].SetupAnimations();
     }
 
     // Create lebals for each planet & start their animations ( we omit the moon ) 
@@ -352,7 +354,7 @@ export class SolarSystemVRApp extends WebXRApp
       labelInfo.billboardmode   = BillboardMode.ALL;
 
       celestials[i].CreateLabel(labelInfo, this.currentScene);
-      // this.startPlanetAnimations(celestials[i].mesh);
+      this.startPlanetAnimations(celestials[i].mesh);
     }
   }
 
@@ -449,37 +451,37 @@ export class SolarSystemVRApp extends WebXRApp
 
   private startPlanetAnimations(mesh : AbstractMesh) : void
   {
-    const planetRotAnimation = new Animation('rotationAnima', 
-    'rotation', 
-    60,
-    Animation.ANIMATIONTYPE_VECTOR3,
-    Animation.ANIMATIONLOOPMODE_CYCLE);
+    // const planetRotAnimation = new Animation('rotationAnima', 
+    // 'rotation', 
+    // 60,
+    // Animation.ANIMATIONTYPE_VECTOR3,
+    // Animation.ANIMATIONLOOPMODE_CYCLE);
 
-    const planetFloatAnimation = new Animation('positionAnima',
-    'position',
-    60,
-    Animation.ANIMATIONTYPE_VECTOR3,
-    Animation.ANIMATIONLOOPMODE_CYCLE
-    )
+    // const planetFloatAnimation = new Animation('positionAnima',
+    // 'position',
+    // 60,
+    // Animation.ANIMATIONTYPE_VECTOR3,
+    // Animation.ANIMATIONLOOPMODE_CYCLE
+    // )
 
-    const keyframes = [
-        {frame: 0, value : mesh.rotation},
-        {frame: 120, value : mesh.rotation.add(new Vector3(0, Math.PI * 2, 0))}
-    ]
+    // const keyframes = [
+    //     {frame: 0, value : mesh.rotation},
+    //     {frame: 120, value : mesh.rotation.add(new Vector3(0, Math.PI * 2, 0))}
+    // ]
 
-    const keyposframes = [
-        {frame: 0, value : mesh.position},
-        {frame: 60, value : mesh.position.add(new Vector3(0, 0.2, 0))},
-        {frame: 120, value : mesh.position}
-    ]
+    // const keyposframes = [
+    //     {frame: 0, value : mesh.position},
+    //     {frame: 60, value : mesh.position.add(new Vector3(0, 0.2, 0))},
+    //     {frame: 120, value : mesh.position}
+    // ]
 
-    planetRotAnimation.setKeys(keyframes);
-    planetFloatAnimation.setKeys(keyposframes);
-    mesh.animations = [];
-    mesh.animations.push(planetRotAnimation);
-    mesh.animations.push(planetFloatAnimation);
+    // planetRotAnimation.setKeys(keyframes);
+    // planetFloatAnimation.setKeys(keyposframes);
+    // mesh.animations = [];
+    // mesh.animations.push(planetRotAnimation);
+    // mesh.animations.push(planetFloatAnimation);
 
-    this.currentScene.scene.beginAnimation(mesh, 0, 120, true);
+    // // this.currentScene.scene.beginAnimation(mesh, 0, 120, true);
   }
 
   private createButton(): void

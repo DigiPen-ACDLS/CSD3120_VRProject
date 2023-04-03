@@ -8,6 +8,7 @@ import
 { 
   AbstractMesh,
   ActionManager,
+  Animation,
   ExecuteCodeAction,
   Mesh,
   MeshBuilder,
@@ -53,6 +54,9 @@ export class CelestialEntity extends Entity
   private   verticalDrag    : PointerDragBehavior;
   private   horizontalDrag  : PointerDragBehavior;
 
+  public    rotateAnimation : Animation;
+  public    floatAnimation  : Animation;
+
   //===========================================================================
   // Constructors & Destructor
   //===========================================================================
@@ -68,9 +72,6 @@ export class CelestialEntity extends Entity
     if (this.mesh)
     {
       this.mesh.actionManager  = new ActionManager(xrScene.scene);
-
-      // Create a sphere collider
-      
     }
   }
 
@@ -200,5 +201,80 @@ export class CelestialEntity extends Entity
       // Default is vertical drag.
       this.mesh.addBehavior(this.verticalDrag);
     }
+  }
+
+  public StartAnimations(xrScene: XRScene)
+  {
+    const planetRotateAnimation = new Animation
+      ( 
+        this.name + '_rotationAnim', 
+        'rotation', 
+        60,
+        Animation.ANIMATIONTYPE_VECTOR3,
+        Animation.ANIMATIONLOOPMODE_CYCLE
+      );
+
+      const planetFloatAnimation = new Animation
+      (
+        this.name + '_positionAnim',
+        'position',
+        60,
+        Animation.ANIMATIONTYPE_VECTOR3,
+        Animation.ANIMATIONLOOPMODE_CYCLE
+      );
+
+      const keyFrames = [
+          {frame: 0, value    : this.mesh.rotation},
+          {frame: 120, value  : this.mesh.rotation.add(new Vector3(0, Math.PI * 2, 0))}
+      ]
+
+      const keyPosFrames = [
+          {frame: 0, value    : this.mesh.position},
+          {frame: 60, value   : this.mesh.position.add(new Vector3(0, 0.2, 0))},
+          {frame: 120, value  : this.mesh.position}
+      ]
+
+      planetRotateAnimation.setKeys(keyFrames);
+      planetFloatAnimation.setKeys(keyPosFrames);
+
+      this.mesh.animations = [];
+      this.mesh.animations.push(planetRotateAnimation);
+      this.mesh.animations.push(planetFloatAnimation);
+
+      xrScene.scene.beginAnimation(this.mesh, 0, 120, true);
+
+      // this.mesh.actionManager?.registerAction
+      // (
+      //   new ExecuteCodeAction
+      //   (
+      //     ActionManager.OnPointerOverTrigger, 
+      //     (event) =>
+      //     {
+      //       xrScene.scene.stopAnimation
+      //       (
+      //         this.mesh, 
+      //         this.name + "_rotationAnim"
+      //       );
+
+      //       xrScene.scene.stopAnimation
+      //       (
+      //         this.mesh, 
+      //         this.name + "_positionAnim"
+      //       );
+      //     }
+      //   )
+      // );
+      
+      // this.mesh.actionManager?.registerAction
+      // (
+      //   new ExecuteCodeAction
+      //   (
+      //     ActionManager.OnPointerOutTrigger, 
+      //     (event) =>
+      //     {
+      //       xrScene.scene.beginAnimation(this.mesh, 0, 120, true);
+      //     }
+      //   )
+      // );
   }
 };
