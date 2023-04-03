@@ -295,16 +295,16 @@ export class SolarSystemVRApp extends WebXRApp
       'Moon'      , // 8
     ];
 
-    let planetPositions = [
-      new Vector3(-6.2, 19.5, -6.0 ),    // mercury
-      new Vector3(-12.2, 19.5, 0.0  ),    // venus  
-      new Vector3(-12.2, 19.5, 6.0  ),    // earth  
-      new Vector3(-12.2, 19.5, 12.0 ),    // mars   
-      new Vector3(-12.2, 20.2, 18.0 ),    // jupiter
-      new Vector3(-12.2, 20.2, 24.0 ),    // saturn 
-      new Vector3(-12.2, 20.2, 30.0 ),    // uranus 
-      new Vector3(-12.2, 19.9, 36.0 ),    // neptune
-      new Vector3( 700 , 700 , 0    ),    // moon   
+    let initialPlanetPositions = [
+      new Vector3(-15.15  , 20.2  , -89.3   ),    // mercury
+      new Vector3(-50.7   , 27    , 61.5    ),    // venus  
+      new Vector3(-10.1   , 12.38 , -19.9   ),    // earth  
+      new Vector3(-96     , 22.8  , -37.5   ),    // mars   
+      new Vector3(-25.15  , 22.5  , 147.7   ),    // jupiter
+      new Vector3(61      , 31.4  , -81.2   ),    // saturn 
+      new Vector3(-103.9  , 28.8  , -119.75 ),    // uranus 
+      new Vector3(-99.5   , 20    , 139     ),    // neptune
+      new Vector3( 700    , 700   , 0       ),    // moon   
     ];
 
     let planetScales = [
@@ -344,7 +344,7 @@ export class SolarSystemVRApp extends WebXRApp
     // Set each celestial transforms
     for (let i = 0; i < 9; ++i)
     {
-      celestials[i].mesh.position = planetPositions[i];
+      celestials[i].mesh.position = initialPlanetPositions[i];
       celestials[i].mesh.scaling.setAll(planetScales[i]);
 
       // celestials[i].SetupAnimations();

@@ -161,7 +161,6 @@ export class CelestialEntity extends Entity
         () =>
         {
           xrScene.scene.beginAnimation(this.textRect, 0, 10, false);
-          console.log("hover");
         }
       )
     );
