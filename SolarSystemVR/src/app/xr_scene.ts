@@ -91,14 +91,14 @@ export class XRScene
   {
     const xrMode: XRSessionMode = this.type === XRMode.VR ? "immersive-vr" : "immersive-ar";
 
-    const xr = await this.scene.createDefaultXRExperienceAsync
+    this.xrExperience = await this.scene.createDefaultXRExperienceAsync
     (
       {
         uiOptions   : { sessionMode: xrMode },
       }
     );
     
-    (window as any).xr = xr;
+    (window as any).xr = this.xrExperience;
 
     // Enable toggling of the scene's inspector
     if (debugMode)
