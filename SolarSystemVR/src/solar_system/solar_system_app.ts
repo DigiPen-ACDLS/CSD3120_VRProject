@@ -499,12 +499,33 @@ export class SolarSystemVRApp extends WebXRApp
         "Neptune"   , // 7
     ];
 
-    (this.entities.get(CELESTIAL_NAMES[0]) as CelestialEntity).MoveToSpaceAnimation
-    (
-      new Vector3(-300, 0, 0),
-      10,
-      this.currentScene
-    );
+    let CELESTIAL_POSITIONS =[
+        new Vector3(-500, 0, -1000),
+        new Vector3(-500, 0, -500),
+        new Vector3(-500, 0, 0),
+        new Vector3(-500, 0, 500),
+        new Vector3(-500, 0, 1000),
+        new Vector3(-500, 0, 1800),
+        new Vector3(-500, 0, 2500),
+        new Vector3(-500, 0, 3200)
+    ];
+
+    for(let i = 0; i < 8; ++i)
+    {
+        (this.entities.get(CELESTIAL_NAMES[i]) as CelestialEntity).MoveToSpaceAnimation
+        (
+            CELESTIAL_POSITIONS[i],
+            100,
+            this.currentScene
+        );
+    }
+
+    // (this.entities.get(CELESTIAL_NAMES[0]) as CelestialEntity).MoveToSpaceAnimation
+    // (
+    //   new Vector3(-300, 0, 0),
+    //   10,
+    //   this.currentScene
+    // );
 
     // Delete target to stop forced positions
     for (const target of this.targets)
