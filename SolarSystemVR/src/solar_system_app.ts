@@ -12,6 +12,7 @@ import
   Color3,
   Engine, 
   GizmoManager,
+  GlowLayer,
   HemisphericLight,
   MeshBuilder,
   PhotoDome,
@@ -50,6 +51,7 @@ import
 } from "./objects";
 import { BillboardMode } from "./utilities/enums";
 import { TextWrapper, TextWrapping } from "babylonjs-gui";
+import { meshFragmentDeclaration } from "babylonjs/Shaders/ShadersInclude/meshFragmentDeclaration";
 
 //=============================================================================
 // Type Definitions
@@ -101,9 +103,9 @@ export class SolarSystemVRApp extends WebXRApp
     hemisphericLight.diffuse    = new Color3(1, 1, 1);
 
     await this.loadModelsAndCreateEntities();
+    await this.CreateRoof()
     await this.SetPlatformPositions();
     await this.SetPlanetPositions();
-    await this.CreateRoof();
    }
     
 
@@ -153,6 +155,7 @@ export class SolarSystemVRApp extends WebXRApp
 
     const filepaths = 
     [
+      //'assets/solarsystem/sun.glb',
       'assets/solarsystem/mercury.glb',
       'assets/solarsystem/venus.glb',
       'assets/solarsystem/earth.glb',
@@ -163,11 +166,12 @@ export class SolarSystemVRApp extends WebXRApp
       'assets/solarsystem/uranus.glb',
       'assets/solarsystem/neptune.glb',
       'assets/models/the_design_lab.glb',
-      'assets/models/sci_fi_platform.glb'
+      'assets/models/sci_fi_platform.glb',
     ];
     
     const names = 
     [
+      //'sun',
       'mercury', 
       'venus',
       'earth',
@@ -228,6 +232,7 @@ export class SolarSystemVRApp extends WebXRApp
   private SetPlanetPositions(): void
   {
     // Planets
+    //const sun     = this.entities.get('sun');
     const mercury = this.entities.get('mercury');
     const venus   = this.entities.get('venus');
     const earth   = this.entities.get('earth');
@@ -237,14 +242,18 @@ export class SolarSystemVRApp extends WebXRApp
     const saturn  = this.entities.get('saturn');
     const uranus  = this.entities.get('uranus');
     const neptune = this.entities.get('neptune');
-
+    //sun
+    //sun.SetDraggable(true);
+    const gl = new GlowLayer("glow", this.currentScene.scene);
+    gl.intensity = 2;
     //Mercury
     mercury.mesh.position = new Vector3(-12.2, 19.5, -6.0);
     mercury.SetDraggable(true);
     mercury.mesh.scaling.setAll(1.2);
     
     //Animations
-    this.StartPlanetAnimations(this.entities.get('mercury').mesh);
+    //this.StartPlanetAnimations(this.entities.get('mercury').mesh);
+    this.AnimateToSpace(mercury.mesh, new Vector3(-12.2, 19.5, -300), 70);
 
     //UI TextPlane Mercury
     mercury.AddUITextPlane("MercuryInformation",
@@ -384,11 +393,113 @@ export class SolarSystemVRApp extends WebXRApp
     }, this.currentScene.scene);
     neptune.textLabel.textBlock.text = "FUN FACT NEPTUNE IS SMALLER THAN YOUR MOM BECAUSE YO MAMA SO FAT THAT DORA CAN'T EVEN EXPLORE HER!"
     neptune.textLabel.textBlock.textWrapping = true;
+
+    //this.AnimateLab();
   }
 
-  private SetPlanetSpace(): void
+  private AnimateToSpace(mesh : AbstractMesh, position : Vector3, scale : number)
   {
+    const planetScaling = new Animation("scalingAnimation", 
+    "scaling",
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CONSTANT
+    );
 
+    const planetMove = new Animation("positionAnimation", 
+    "position",
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CONSTANT
+    );
+
+    const keyframes = [
+      {frame: 0, value : mesh.scaling},
+      {frame: 360, value : mesh.scaling.multiply(new Vector3(scale, scale, scale))}
+    ]
+
+    const posKeyFrames = [
+      {frame: 0, value : mesh.position},
+      {frame: 360, value : position}
+    ]
+
+    planetScaling.setKeys(keyframes);
+    planetMove.setKeys(posKeyFrames);
+    mesh.animations = [];
+    mesh.animations.push(planetScaling);
+    mesh.animations.push(planetMove);
+
+    this.currentScene.scene.beginAnimation(mesh, 0, 360, false);
+  }
+
+  private AnimateLab() : void 
+  {
+    const plane = this.entities.get('roof').mesh;
+    const lab = this.entities.get('lab').mesh;
+    const roofAnimation = new Animation('rotationAnima', 
+    'rotation', 
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+    const roofMove = new Animation('positionAnima',
+    'position', 
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CONSTANT
+    )
+
+    const labAnimation = new Animation('rotationAnima', 
+    'rotation', 
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+    const labMove = new Animation('positionAnima',
+    'position',
+    60,
+    Animation.ANIMATIONTYPE_VECTOR3,
+    Animation.ANIMATIONLOOPMODE_CONSTANT
+    )
+
+    const keyframes = [
+        {frame: 0, value : new Vector3(Math.PI / 2, 0, 0)},
+        {frame: 960, value : new Vector3(Math.PI / 2, 0, 2*Math.PI)}
+    ]
+
+    const keyposframes = [
+        {frame: 0, value : plane.position},
+        {frame: 960, value : plane.position.add(new Vector3(0, 150, 0))}
+    ]
+
+    const keylabframes = [
+      {frame: 0, value : lab.rotation},
+      {frame: 960, value : new Vector3(0, -2*Math.PI, 0)}
+  ]
+
+    const keyposlabframes = [
+      {frame: 0, value : plane.position},
+      {frame: 960, value : plane.position.subtract(new Vector3(0, 500, 0))}
+    ]
+    
+
+    roofAnimation.setKeys(keyframes);
+    roofMove.setKeys(keyposframes);
+    labAnimation.setKeys(keylabframes);
+    labMove.setKeys(keyposlabframes);
+    plane.animations = [];
+    plane.animations.push(roofAnimation);
+    plane.animations.push(roofMove);
+    lab.animations = [];
+    lab.animations.push(labAnimation);
+    lab.animations.push(labMove);
+    
+    this.currentScene.scene.beginAnimation(plane, 0, 960, false, 1, () =>{
+      plane.dispose();
+    });
+    this.currentScene.scene.beginAnimation(lab, 0, 960, false, 1, ()=>{
+      lab.dispose();
+    });
   }
 
   private async CreateRoof(): Promise<void>
@@ -406,41 +517,13 @@ export class SolarSystemVRApp extends WebXRApp
     );
 
     plane.rotation = new Vector3(Math.PI / 2, 0, 0);
-    this.entities.set("root", new Entity("roof", plane));
-
+    
     await this.entities.get('lab').mesh.scaling.setAll(10);
     await this.entities.get('lab').mesh.addChild(plane);
     plane.position = new Vector3(2.1, 7.6, -1.8);
     plane.scaling = new Vector3(1.85, 3, 0.1);
 
-    const roofAnimation = new Animation('rotationAnima', 
-    'rotation', 
-    60,
-    Animation.ANIMATIONTYPE_VECTOR3,
-    Animation.ANIMATIONLOOPMODE_CONSTANT);
-
-    const roofMove = new Animation('positionAnima',
-    'position', 
-    60,
-    Animation.ANIMATIONTYPE_VECTOR3,
-    Animation.ANIMATIONLOOPMODE_CONSTANT
-    )
-
-    const keyframes = [
-        {frame: 0, value : new Vector3(Math.PI / 2, 0, 0)},
-        {frame: 360, value : new Vector3(Math.PI / 2, 0, 2*Math.PI)}
-    ]
-
-    const keyposframes = [
-        {frame: 0, value : plane.position},
-        {frame: 960, value : plane.position.add(new Vector3(0, 150, 0))}
-    ]
-
-    roofAnimation.setKeys(keyframes);
-    roofMove.setKeys(keyposframes);
-    plane.animations = [];
-    plane.animations.push(roofAnimation);
-    plane.animations.push(roofMove);
+    this.entities.set("roof", new Entity("roof", plane));
   }
 
   private StartPlanetAnimations(mesh : AbstractMesh) : void
