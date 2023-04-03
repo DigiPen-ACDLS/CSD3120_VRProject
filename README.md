@@ -51,7 +51,7 @@ SolarSystemVR <br/>
   &nbsp&nbsp -- utilites
 </p>
 
-### :fountain_pen: Developers
+## :fountain_pen: Developers
 
 <p>
 	Austen Ang <br/>		
