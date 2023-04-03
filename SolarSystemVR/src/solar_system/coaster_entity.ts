@@ -5,9 +5,7 @@
 
 // Packages
 import
-{
-
-} from "babylonjs";
+{ AbstractMesh, Color3, MeshBuilder, StandardMaterial } from "babylonjs";
 import { XRScene } from "../app";
 
 // Local Imports
@@ -18,6 +16,7 @@ import
   UIText, 
   UITextCreateInfo
 } from "../objects";
+import { CelestialEntity } from "./celestial_entity";
 
 //=============================================================================
 // Type Definitions
@@ -29,7 +28,9 @@ export class CoasterEntity extends Entity
   // Data Members
   //===========================================================================
 
-  public    textLabel       : UIText;
+  public    textLabel   : UIText;
+  public    targetMesh  : AbstractMesh;
+  public    matched     : boolean;
 
   //===========================================================================
   // Constructors & Destructor
@@ -38,6 +39,8 @@ export class CoasterEntity extends Entity
   constructor(createInfo: EntityCreateInfo)
   {
     super(createInfo);
+
+    this.matched = false;
   }
 
   public CreateLabel(createInfo: UITextCreateInfo, xrScene: XRScene)

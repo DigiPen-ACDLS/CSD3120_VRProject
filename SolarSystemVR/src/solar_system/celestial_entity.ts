@@ -9,6 +9,8 @@ import
   AbstractMesh,
   ActionManager,
   ExecuteCodeAction,
+  Mesh,
+  MeshBuilder,
   PointerDragBehavior, 
   Scene, 
   Texture, 
@@ -46,6 +48,7 @@ export class CelestialEntity extends Entity
   //===========================================================================
 
   public    textLabel       : UIText;
+  public    sphereCollider  : AbstractMesh;
 
   private   verticalDrag    : PointerDragBehavior;
   private   horizontalDrag  : PointerDragBehavior;
@@ -65,6 +68,9 @@ export class CelestialEntity extends Entity
     if (this.mesh)
     {
       this.mesh.actionManager  = new ActionManager(xrScene.scene);
+
+      // Create a sphere collider
+      
     }
   }
 
@@ -83,19 +89,20 @@ export class CelestialEntity extends Entity
 
     this.textLabel.plane.position = createInfo.planePosition;
     this.textLabel.plane.rotation = createInfo.planeRotation;
+  }
 
-    // const uiCreateInfo              = new UITextCreateInfo(name);
-    // uiCreateInfo.fontSize           = options.fontSize || 32;
-    // uiCreateInfo.planeDimensions    = options.planeDim || new Vector2(4.5, 2.5);
-    // uiCreateInfo.planePosition      = new Vector3(0, 0, 0);
-    // uiCreateInfo.planeRotation      = new Vector3(0, 0, 0);
-    // uiCreateInfo.billboardmode      = options.billboard || BillboardMode.None;
-    // uiCreateInfo.text               = "Hello World";
-    
-    // this.textLabel = new UIText(uiCreateInfo, scene);
-    // this.mesh.addChild(this.textLabel.plane);
-    // this.textLabel.plane.position = options.position || new Vector3(0, 0, 0);
-    // this.textLabel.plane.rotation = options.rotation || new Vector3(0, 0, 0);
+  public AddCollider(xrScene: XRScene)
+  {
+    if (this.mesh != null)
+    {
+      this.sphereCollider = MeshBuilder.CreateSphere(this.name + "_collider", { diameter: 1, segments: 32}, xrScene.scene);
+
+      (this.sphereCollider as Mesh).checkCollisions = true;
+      (this.sphereCollider as Mesh).position        = new Vector3(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
+      (this.sphereCollider as Mesh).isVisible       = false;
+
+      this.mesh.addChild(this.sphereCollider);
+    }
   }
 
   public SetLabelState(state: LabelState)

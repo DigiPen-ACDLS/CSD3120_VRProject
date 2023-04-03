@@ -12,6 +12,8 @@ import
   HemisphericLight, 
   MeshBuilder,
   Scene,
+  StandardMaterial,
+  Texture,
   UniversalCamera, 
   Vector3, 
   WebXRCamera 
@@ -65,6 +67,7 @@ export class SandboxVR extends WebXRApp
 
     await this.createFloor();
     await this.createSpheresAndTargets();
+    await this.createTextures();
     await this.createButton();
     
     
@@ -86,18 +89,11 @@ export class SandboxVR extends WebXRApp
 
   private initUser(): void
   {
-    const camera = new FreeCamera("Camera", new Vector3(0, 3, -5), this.currentScene.scene);
-    camera.minZ  = 0.01;
-    camera.speed = 0.3;
-  
-    camera.attachControl(this.canvas);
+    this.currentScene.CreateDefaultUser(new Vector3(0, 3, -5), new Vector3(0,1,0));
+    (this.currentScene.user.camera as UniversalCamera).speed    = 0.3;
 
-    // const xrCamera        = new WebXRCamera("XRCamera", this.currentScene.scene, this.currentScene.sessionManager);
-    // xrCamera.setTransformationFromNonVRCamera(universalCamera);
-    // xrCamera.attachControl(this.canvas, true);
-
-    this.currentScene.scene.activeCamera  = camera;
-    this.currentScene.user.camera         = camera;
+    this.currentScene.user.camera.attachControl(this.canvas, true);
+    this.currentScene.scene.activeCamera = this.currentScene.user.camera;
   }
 
   private createFloor(): void
@@ -129,6 +125,14 @@ export class SandboxVR extends WebXRApp
     // C
     this.spheres[2].mesh.position = new Vector3(1,1,0);
     this.triggers[2].mesh.position = new Vector3(-1,0.5,-2);
+  }
+
+  private createTextures(): void
+  {
+    const mercuryMaterial = new StandardMaterial("MercuryMaterial", this.currentScene.scene);
+    mercuryMaterial.diffuseTexture = new Texture("assets/textures/planets/mercury.jpg");
+
+    this.spheres[0].mesh.material = mercuryMaterial;
   }
 
   private createButton(): void

@@ -8,6 +8,7 @@ import
 {
   Engine,
   Scene,
+  UniversalCamera,
   Vector3,
   WebXRDefaultExperience,
   WebXRFeaturesManager,
@@ -67,9 +68,10 @@ export class XRScene
   // Public Member Functions
   //===========================================================================
 
-  public CreateDefaultUser(userPosition: Vector3): void
+  public CreateDefaultUser(userPosition: Vector3, target: Vector3): void
   {
     this.user = new XRUser(userPosition, this);
+    (this.user.camera as UniversalCamera).target = target;
   }
 
   /**
