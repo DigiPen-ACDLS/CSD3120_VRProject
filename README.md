@@ -27,7 +27,7 @@ Experience the solar system right in your bedroom!
  - Use your mouse to drag atoms around.
  - Press `W` `A` `S` `D` to move the camera around.
  - Use your mouse to drag the planets around the scene
-</blockqu
+</blockquote>
 
 ## :hammer: Setup
 
@@ -39,4 +39,15 @@ Your default browser will open a window to run the application.
 </p>
 
 ## :house: Architecture
+
+
+### :fountain_pen: Developers
+
+<p>
+	Austen Ang <br/>		
+	Cassandra Chew <br/>
+	Diren D Bharwani <br/>
+	Leonard Lee Hon Han <br/>
+	Shawn Lee Ming Yang
+</p>
 
