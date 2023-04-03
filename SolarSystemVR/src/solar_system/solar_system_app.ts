@@ -367,7 +367,7 @@ export class SolarSystemVRApp extends WebXRApp
     let correctPositions = [
       new Vector3(-12.2, 19.5, -6.0 ),    // mercury
       new Vector3(-12.2, 19.5, 0.0  ),    // venus  
-      new Vector3(-12.2, 19.5, 6.0  ),    // earth  
+      new Vector3(-10.1   , 12.38 , -19.9   ),    // earth  
       new Vector3(-12.2, 19.5, 12.0 ),    // mars   
       new Vector3(-12.2, 20.2, 18.0 ),    // jupiter
       new Vector3(-12.2, 20.2, 24.0 ),    // saturn 
