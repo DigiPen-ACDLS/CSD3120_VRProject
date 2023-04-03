@@ -40,6 +40,16 @@ Your default browser will open a window to run the application.
 
 ## :house: Architecture
 
+<p>
+<h3> Folder Structure </h3>
+SolarSystemVR <br/>
+	&nbsp-- src <br/>
+  &nbsp&nbsp -- app (Generic Application Helpers) <br/>
+  &nbsp&nbsp -- objects (Generic Objects for the Scene) <br/>
+  &nbsp&nbsp -- sandbox (Objects and a Scene used for testing) <br/>
+  &nbsp&nbsp -- solar_system (Custom objects and wrappers for the main application) <br/>
+  &nbsp&nbsp -- utilites
+</p>
 
 ### :fountain_pen: Developers
 
