@@ -8,24 +8,10 @@ echo Checking NPM Version...
 echo NPM Version: 
 call npm --v && (
   echo --------------------------------
-) || echo NPM is not installed! && (
-  call npm install
 )
 
-if not exist SolarSystemVR\ ( mkdir SolarSystemVR )
+if not exist node_modules\ ( call npm install )
 cd SolarSystemVR
-
-:: Initialise the npm with defaults
-choice /c YN /m "Update Dependencies"
-set e=%errorlevel%
-
-if e==Y (goto update) else (goto run)
-
-: update
-echo Updating Dependencies...
-call npm update
-echo All Dependencies Updated!
-goto run
 
 : run
 echo Running SolarSystemVR...
