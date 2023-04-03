@@ -14,10 +14,11 @@ module.exports =
     devtool     : 'inline-source-map',
     devServer : {
       static    : true,
-      port      : 3000,
+      port      : 8080,
       open      : true,
       hot       : true,
-      liveReload: true
+      liveReload: true,
+      https     : true
     },
     plugins     : [
       new HtmlWebpackPlugin({

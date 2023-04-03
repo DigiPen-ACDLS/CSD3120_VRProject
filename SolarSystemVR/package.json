@@ -1,35 +1,36 @@
 {
-  "name"                      : "solar_system_vr",
-  "version"                   : "1.0.0",
-  "description"               : "Interactive  & educational VR experience that explores the solar system.",
-  "main"                      : "index.js",
-  "scripts" : {
-    "test"                    : "echo \"Error: no test specified\" && exit 1",
-    "build"                   : "webpack --mode=production --node-env=production",
-    "build:dev"               : "webpack --mode=development",
-    "build:prod"              : "webpack --mode=production --node-env=production",
-    "watch"                   : "webpack --watch",
-    "serve"                   : "webpack serve",
-    "start"                   : "webpack serve --open"
+  "name": "solar_system_vr",
+  "version": "1.0.0",
+  "description": "Interactive  & educational VR experience that explores the solar system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=production --node-env=production",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production --node-env=production",
+    "watch": "webpack --watch",
+    "serve": "webpack serve",
+    "start": "webpack serve --open"
   },
-  "keywords"                  : [],
-  "author"                    : "",
-  "license"                   : "ISC",
-  "devDependencies" : {
-    "@webpack-cli/generators" : "^3.0.1",
-    "copy-webpack-plugin"     : "^11.0.0",
-    "html-webpack-plugin"     : "^5.5.0",
-    "prettier"                : "^2.8.7",
-    "ts-loader"               : "^9.4.2",
-    "typescript"              : "^5.0.2",
-    "webpack"                 : "^5.76.3",
-    "webpack-cli"             : "^5.0.1",
-    "webpack-dev-server"      : "^4.13.1"
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@webpack-cli/generators": "^3.0.1",
+    "copy-webpack-plugin": "^11.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "http-server": "^14.1.1",
+    "prettier": "^2.8.7",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.2",
+    "webpack": "^5.76.3",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.13.1"
   },
-  "dependencies"  : {
-    "babylonjs"               : "^5.52.0",
-    "babylonjs-gui"           : "^5.52.0",
-    "babylonjs-loaders"       : "^5.52.0",
-    "babylonjs-materials"     : "^5.52.0"
+  "dependencies": {
+    "babylonjs": "^5.52.0",
+    "babylonjs-gui": "^5.52.0",
+    "babylonjs-loaders": "^5.52.0",
+    "babylonjs-materials": "^5.52.0"
   }
 }

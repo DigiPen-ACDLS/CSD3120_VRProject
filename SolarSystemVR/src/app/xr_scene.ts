@@ -3,8 +3,28 @@
   @author         Diren D Bharwani, 2002216
 */
 
-import * as BABYLON from "babylonjs";
-import { CameraType, CameraConfig, XRUser } from "../objects";
+// Packages
+import 
+{
+  Engine,
+  Scene,
+  UniversalCamera,
+  Vector3,
+  WebXRDefaultExperience,
+  WebXRFeaturesManager,
+  WebXRSessionManager
+} from "babylonjs";
+
+import 
+{
+  AdvancedDynamicTexture 
+} from "babylonjs-gui";
+
+// Local Imports
+import 
+{ 
+  XRUser 
+} from "../objects";
 
 //=============================================================================
 // Type Definitions
@@ -13,7 +33,11 @@ import { CameraType, CameraConfig, XRUser } from "../objects";
 /**
  * The type of the XRScene.
  */
-export enum XRMode{ VR, AR };
+export enum XRMode
+{ 
+  VR, 
+  AR 
+};
 
 export class XRScene
 {
@@ -21,39 +45,43 @@ export class XRScene
   // Data Members
   //===========================================================================
 
-  private  type            : XRMode;
+  private   type          : XRMode;
 
   // Babylon components
 
-  public   scene            : BABYLON.Scene;
-  public   featuresManager  : BABYLON.WebXRFeaturesManager;
+  public    scene         : Scene;
+  public    xrExperience  : WebXRDefaultExperience;
 
-  public   user            : XRUser;
+  public    user          : XRUser;
+  public    fullscreenUI  : AdvancedDynamicTexture;
 
   //===========================================================================
   // Constructors & Destructor
   //===========================================================================
 
-  constructor(mode: XRMode, engine: BABYLON.Engine)
+  constructor(mode: XRMode, engine: Engine)
   {
     this.type = mode;
-
+    
     // Hide the inspector by default.
-    this.scene = new BABYLON.Scene(engine);
+    this.scene = new Scene(engine);
     this.scene.debugLayer.hide();
 
     this.scene.collisionsEnabled = true;
 
-    // Create user & Free Camera by default
-    this.user = new XRUser(this);
-
-    const cameraInfo = new CameraConfig(CameraType.Free, "XRUserCamera");
-    this.user.CreateCamera(cameraInfo);
+    this.fullscreenUI = AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    this.fullscreenUI.useInvalidateRectOptimization = false;
   }
 
   //===========================================================================
   // Public Member Functions
   //===========================================================================
+
+  public CreateDefaultUser(userPosition: Vector3, target: Vector3): void
+  {
+    this.user = new XRUser(userPosition, this);
+    (this.user.camera as UniversalCamera).target = target;
+  }
 
   /**
    * Call this function after the scene has been setup to create the VR experience.
@@ -63,11 +91,14 @@ export class XRScene
   {
     const xrMode: XRSessionMode = this.type === XRMode.VR ? "immersive-vr" : "immersive-ar";
 
-    const xr = await this.scene.createDefaultXRExperienceAsync({
-      uiOptions: { sessionMode: xrMode }
-    });
-
-    (window as any).xr = xr;
+    this.xrExperience = await this.scene.createDefaultXRExperienceAsync
+    (
+      {
+        uiOptions   : { sessionMode: xrMode },
+      }
+    );
+    
+    (window as any).xr = this.xrExperience;
 
     // Enable toggling of the scene's inspector
     if (debugMode)
@@ -82,9 +113,19 @@ export class XRScene
         } 
       });
     }
+  }
 
-    // Attach the features manager. Features can be enabled through another experience
-    this.featuresManager = xr.baseExperience.featuresManager;
+  public async ToggleXRMode(mode: boolean)
+  {
+    if (mode)
+    {
+      const xrMode: XRSessionMode = this.type === XRMode.VR ? "immersive-vr" : "immersive-ar";
+      await this.xrExperience.baseExperience.enterXRAsync(xrMode, "local-floor");
+    }
+    else
+    {
+      await this.xrExperience.baseExperience.exitXRAsync();
+    }
   }
 
 };

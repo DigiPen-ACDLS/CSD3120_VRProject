@@ -3,10 +3,22 @@
   @author         Diren D Bharwani, 2002216
 */
 
-import * as BABYLON from "babylonjs";
-import { FreeCamera } from "babylonjs";
-import { XRScene } from "../app";
-import { CameraType, CameraConfig } from "./config_objects";
+// Packages
+import 
+{
+  Camera,
+  FreeCamera,
+  Scene,
+  UniversalCamera,
+  Vector3,
+  WebXRCamera
+} from "babylonjs";
+
+// Local Imports
+import 
+{ 
+  XRScene 
+} from "../app";
 
 //=============================================================================
 // Type Definitions
@@ -25,8 +37,7 @@ export class XRUser
   // Data Members
   //===========================================================================
 
-  private scene       : BABYLON.Scene;    // The scene the user is tied to.
-  public  camera      : BABYLON.Camera;
+  public  camera : Camera;
 
   // TODO: Add Motion Controllers & Interactions?
 
@@ -34,43 +45,17 @@ export class XRUser
   // Constructor & Destructors
   //===========================================================================
 
-  constructor(xrscene: XRScene)
+  constructor(position: Vector3, xrScene: XRScene) /*, useWebXRCamera: boolean = false*/
   {
-    this.scene = xrscene.scene;
-  }
+    this.camera = new UniversalCamera("XRUserCamera", position, xrScene.scene);
+    this.camera.minZ  = 0.01;
+    
+    (this.camera as UniversalCamera).checkCollisions = true;
 
-  //===========================================================================
-  // Member Functions
-  //===========================================================================
-
-  public CreateCamera(cameraInfo: CameraConfig)
-  {
-    switch (cameraInfo.type)
-    {
-      case CameraType.Free:
-      {
-        this.camera       = new BABYLON.FreeCamera(cameraInfo.name, cameraInfo.position, this.scene, true);
-        this.camera.minZ  = 0.01;
-
-        (this.camera as BABYLON.FreeCamera).checkCollisions = cameraInfo.collisions;
-
-        break;
-      }
-      case CameraType.Universal:
-      {
-        this.camera = new BABYLON.UniversalCamera(cameraInfo.name, cameraInfo.position, this.scene);
-        this.camera.minZ  = 0.01;
-
-        (this.camera as BABYLON.UniversalCamera).checkCollisions = cameraInfo.collisions;
-
-        break;
-      }
-      default:
-      {
-        console.log("This camera has not been implemented or an invalid type was passed in!!");
-        
-        break;
-      }
-    }
+    // if (useWebXRCamera)
+    // {
+    //   const webXRCamera = new WebXRCamera("XRCamera", xrScene.scene, xrScene.sessionManager);
+    //   webXRCamera.setTransformationFromNonVRCamera(this.camera);
+    // }
   }
 };
