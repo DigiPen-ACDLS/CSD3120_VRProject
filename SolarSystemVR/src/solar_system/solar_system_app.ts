@@ -353,8 +353,7 @@ export class SolarSystemVRApp extends WebXRApp
       labelInfo.planePosition   = labelPositions[i];
       labelInfo.billboardmode   = BillboardMode.ALL;
 
-      celestials[i].CreateLabel(labelInfo, this.currentScene);
-      this.startPlanetAnimations(celestials[i].mesh);
+      celestials[i].CreateLabel(names[i], this.currentScene);
     }
   }
 

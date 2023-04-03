@@ -15,6 +15,11 @@ import
   WebXRSessionManager
 } from "babylonjs";
 
+import 
+{
+  AdvancedDynamicTexture 
+} from "babylonjs-gui";
+
 // Local Imports
 import 
 { 
@@ -48,6 +53,7 @@ export class XRScene
   public    xrExperience  : WebXRDefaultExperience;
 
   public    user          : XRUser;
+  public    fullscreenUI  : AdvancedDynamicTexture;
 
   //===========================================================================
   // Constructors & Destructor
@@ -62,6 +68,9 @@ export class XRScene
     this.scene.debugLayer.hide();
 
     this.scene.collisionsEnabled = true;
+
+    this.fullscreenUI = AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    this.fullscreenUI.useInvalidateRectOptimization = false;
   }
 
   //===========================================================================

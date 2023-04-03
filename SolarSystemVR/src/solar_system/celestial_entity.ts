@@ -14,12 +14,24 @@ import
   MeshBuilder,
   PointerDragBehavior, 
   Scene, 
+  StandardMaterial, 
   Texture, 
   Vector3
 } from "babylonjs";
-import { XRScene } from "../app";
+
+import 
+{
+   AdvancedDynamicTexture
+   , Control, Rectangle
+   , TextBlock
+} from "babylonjs-gui";
 
 // Local Imports
+import 
+{ 
+  XRScene 
+} from "../app";
+
 import
 {
   Entity,
@@ -48,14 +60,15 @@ export class CelestialEntity extends Entity
   // Data Members
   //===========================================================================
 
-  public    textLabel       : UIText;
+  private   rotateAnimation : Animation;
+  private   floatAnimation  : Animation;
+
+  private   label           : TextBlock;
+  private   textRect        : Rectangle;
   public    sphereCollider  : AbstractMesh;
 
   private   verticalDrag    : PointerDragBehavior;
   private   horizontalDrag  : PointerDragBehavior;
-
-  public    rotateAnimation : Animation;
-  public    floatAnimation  : Animation;
 
   //===========================================================================
   // Constructors & Destructor
@@ -64,6 +77,8 @@ export class CelestialEntity extends Entity
   constructor(createInfo: EntityCreateInfo, xrScene: XRScene)
   {
     super(createInfo);
+    this.mesh.checkCollisions = true;
+    this.mesh.isPickable      = true;
 
     // Create drag behaviours
     this.verticalDrag   = new PointerDragBehavior( {dragAxis: Vector3.Up() }); 
@@ -79,17 +94,90 @@ export class CelestialEntity extends Entity
   // Member Functions
   //===========================================================================
 
-  public CreateLabel(createInfo: UITextCreateInfo, xrScene: XRScene)
+  public CreateLabel(text: string, xrScene: XRScene)
   {
-    this.textLabel = new UIText(createInfo, xrScene.scene);
+    this.textRect = new Rectangle(this.name + "_textRect");
+    xrScene.fullscreenUI.addControl(this.textRect);
+    this.textRect.width             = "300px";
+    this.textRect.height            ="200px";
+    this.textRect.thickness         = 2;        
+    this.textRect.linkOffsetX       = "150px";
+    this.textRect.linkOffsetY       = "-100px";
+    this.textRect.transformCenterX  = 0;
+    this.textRect.transformCenterY  = 1;  
+    this.textRect.background        = "grey";
+    this.textRect.alpha             = 0.7;
+    this.textRect.scaleX            = 0;
+    this.textRect.scaleY            = 0;
+    this.textRect.cornerRadius      = 30
+    this.textRect.linkWithMesh(this.sphereCollider);
 
-    if (this.mesh != null)
-    {
-      this.mesh.addChild(this.textLabel.plane);
-    }
+    this.label = new TextBlock(this.name + "_label");
+    this.label.text                   = text;
+    this.label.color                  = "White";
+    this.label.fontSize               = 14;
+    this.label.textWrapping           = true;
+    this.label.textVerticalAlignment  = Control.VERTICAL_ALIGNMENT_TOP;
+    // this.label.                    = '#006994'
+    this.label.alpha                  = 0.5;
+    this.label.paddingTop             = "20px";
+    this.label.paddingBottom          = "20px";
+    this.label.paddingLeft            = "20px";
+    this.label.paddingRight           = "20px";
 
-    this.textLabel.plane.position = createInfo.planePosition;
-    this.textLabel.plane.rotation = createInfo.planeRotation;
+    this.textRect.addControl(this.label);
+
+    const scaleXAnimation = new Animation(this.label.name + "_scaleXAnim", "scaleX", 30, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+    const scaleYAnimation = new Animation(this.label.name + "_scaleYAnim", "scaleY", 30, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CONSTANT);
+
+    const keyFrames = [];
+
+    keyFrames.push
+    (
+      {
+        frame: 0,
+        value: 0
+      }
+    );
+
+    keyFrames.push
+    (
+      {
+        frame: 10,
+        value: 1
+      }
+    );
+
+    scaleXAnimation.setKeys(keyFrames);
+    scaleYAnimation.setKeys(keyFrames);
+    this.textRect.animations = [];
+    this.textRect.animations.push(scaleXAnimation);
+    this.textRect.animations.push(scaleYAnimation);
+
+    this.sphereCollider.actionManager?.registerAction
+    (
+      new ExecuteCodeAction
+      (
+        ActionManager.OnPointerOverTrigger, 
+        () =>
+        {
+          xrScene.scene.beginAnimation(this.textRect, 0, 10, false);
+          console.log("hover");
+        }
+      )
+    );
+    
+    this.sphereCollider.actionManager?.registerAction
+    (
+      new ExecuteCodeAction
+      (
+        ActionManager.OnPointerOutTrigger, 
+        () =>
+        {
+          xrScene.scene.beginAnimation(this.textRect, 10, 0, false);
+        }
+      )
+    );
   }
 
   public AddCollider(xrScene: XRScene)
@@ -97,63 +185,19 @@ export class CelestialEntity extends Entity
     if (this.mesh != null)
     {
       this.sphereCollider = MeshBuilder.CreateSphere(this.name + "_collider", { diameter: 1, segments: 32}, xrScene.scene);
+      this.sphereCollider.actionManager = new ActionManager(xrScene.scene);
 
       (this.sphereCollider as Mesh).checkCollisions = true;
       (this.sphereCollider as Mesh).position        = new Vector3(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
-      (this.sphereCollider as Mesh).isVisible       = false;
+      (this.sphereCollider as Mesh).isVisible       = true;
+
+      // HACK: Make a transparent material for the sphere
+      const sphereMaterial = new StandardMaterial(this.name + "_sphereColliderMat", xrScene.scene);
+      sphereMaterial.alpha = 0.0;
+
+      this.sphereCollider.material = sphereMaterial;
 
       this.mesh.addChild(this.sphereCollider);
-    }
-  }
-
-  public SetLabelState(state: LabelState)
-  {
-    switch (state)
-    {
-      case LabelState.OFF:
-      {
-        this.textLabel.plane.isVisible      = false;
-        this.textLabel.textBlock.isVisible  = false;
-
-        break;
-      }
-      case LabelState.ON_HOVER:
-      {
-        this.mesh.actionManager?.registerAction
-        (
-          new ExecuteCodeAction
-          (
-            ActionManager.OnPointerOverTrigger, 
-            
-            (event) =>
-            {
-              // TODO: Show Text
-            }
-          )
-        );
-        
-        this.mesh.actionManager?.registerAction
-        (
-          new ExecuteCodeAction
-          (
-            ActionManager.OnPointerOutTrigger, 
-            
-            (event) =>
-            {
-              // TODO: Hide Text
-            }
-          )
-        );
-
-        break;
-      }
-      case LabelState.ALWAYS_ON:
-      {
-        this.textLabel.plane.isVisible      = true;
-        this.textLabel.textBlock.isVisible  = true;
-
-        break;
-      }
     }
   }
 
@@ -205,76 +249,42 @@ export class CelestialEntity extends Entity
 
   public StartAnimations(xrScene: XRScene)
   {
-    const planetRotateAnimation = new Animation
-      ( 
-        this.name + '_rotationAnim', 
-        'rotation', 
-        60,
-        Animation.ANIMATIONTYPE_VECTOR3,
-        Animation.ANIMATIONLOOPMODE_CYCLE
-      );
+    this.rotateAnimation = new Animation
+    ( 
+      this.name + '_rotationAnim', 
+      'rotation', 
+      60,
+      Animation.ANIMATIONTYPE_VECTOR3,
+      Animation.ANIMATIONLOOPMODE_CYCLE
+    );
 
-      const planetFloatAnimation = new Animation
-      (
-        this.name + '_positionAnim',
-        'position',
-        60,
-        Animation.ANIMATIONTYPE_VECTOR3,
-        Animation.ANIMATIONLOOPMODE_CYCLE
-      );
+    this.floatAnimation = new Animation
+    (
+      this.name + '_positionAnim',
+      'position',
+      60,
+      Animation.ANIMATIONTYPE_VECTOR3,
+      Animation.ANIMATIONLOOPMODE_CYCLE
+    );
 
-      const keyFrames = [
-          {frame: 0, value    : this.mesh.rotation},
-          {frame: 120, value  : this.mesh.rotation.add(new Vector3(0, Math.PI * 2, 0))}
-      ]
+    const keyFrames = [
+        {frame: 0, value    : this.mesh.rotation},
+        {frame: 120, value  : this.mesh.rotation.add(new Vector3(0, Math.PI * 2, 0))}
+    ]
 
-      const keyPosFrames = [
-          {frame: 0, value    : this.mesh.position},
-          {frame: 60, value   : this.mesh.position.add(new Vector3(0, 0.2, 0))},
-          {frame: 120, value  : this.mesh.position}
-      ]
+    const keyPosFrames = [
+        {frame: 0, value    : this.mesh.position},
+        {frame: 60, value   : this.mesh.position.add(new Vector3(0, 0.2, 0))},
+        {frame: 120, value  : this.mesh.position}
+    ]
 
-      planetRotateAnimation.setKeys(keyFrames);
-      planetFloatAnimation.setKeys(keyPosFrames);
+    this.rotateAnimation.setKeys(keyFrames);
+    this.floatAnimation.setKeys(keyPosFrames);
 
-      this.mesh.animations = [];
-      this.mesh.animations.push(planetRotateAnimation);
-      this.mesh.animations.push(planetFloatAnimation);
+    this.mesh.animations = [];
+    this.mesh.animations.push(this.rotateAnimation);
+    this.mesh.animations.push(this.floatAnimation);
 
-      xrScene.scene.beginAnimation(this.mesh, 0, 120, true);
-
-      // this.mesh.actionManager?.registerAction
-      // (
-      //   new ExecuteCodeAction
-      //   (
-      //     ActionManager.OnPointerOverTrigger, 
-      //     (event) =>
-      //     {
-      //       xrScene.scene.stopAnimation
-      //       (
-      //         this.mesh, 
-      //         this.name + "_rotationAnim"
-      //       );
-
-      //       xrScene.scene.stopAnimation
-      //       (
-      //         this.mesh, 
-      //         this.name + "_positionAnim"
-      //       );
-      //     }
-      //   )
-      // );
-      
-      // this.mesh.actionManager?.registerAction
-      // (
-      //   new ExecuteCodeAction
-      //   (
-      //     ActionManager.OnPointerOutTrigger, 
-      //     (event) =>
-      //     {
-      //       xrScene.scene.beginAnimation(this.mesh, 0, 120, true);
-      //     }
-      //   )
-      // );
+    xrScene.scene.beginAnimation(this.mesh, 0, 120, true);
   }
 };
