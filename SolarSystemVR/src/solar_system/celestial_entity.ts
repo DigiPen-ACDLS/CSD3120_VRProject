@@ -1,6 +1,7 @@
 /**
   @fileoverview   Implementation of a celestial entity for the solar system app.
   @author         Diren D Bharwani, 2002216
+                  Austen Ang Xuan Ming, 2001774
 */
 
 // Packages

@@ -1,7 +1,8 @@
 /**
   @fileoverview   Implementation of the solar system WebXR application.
   @author         Diren D Bharwani, 2002216
-                  <fill in your name Leonard>
+                  Lee Hon Han Leonard, 2001896
+                  Austen Ang Xuan Ming, 2001774
 */
 
 // Packages
@@ -413,7 +414,7 @@ export class SolarSystemVRApp extends WebXRApp
     // Set each celestial transforms
     for (let i = 0; i < 9; ++i)
     {
-      celestials[i].mesh.position = correctPositions[i];
+      celestials[i].mesh.position = initialPlanetPositions[i];
       celestials[i].mesh.scaling.setAll(planetScales[i]);
     }
 

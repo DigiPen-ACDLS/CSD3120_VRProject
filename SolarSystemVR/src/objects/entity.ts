@@ -1,6 +1,6 @@
 /**
   @fileoverview   Implementation of a simple entity.
-  @author         Leonard Lee, 369369369
+  @author         Leonard Lee, 2001896
 */
 
 
